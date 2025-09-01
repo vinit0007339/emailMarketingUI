@@ -1,0 +1,118 @@
+* {
+  --primary: 'HypatiaSansPro';
+  --secondary: 'Futura';
+  --blue: #081359;
+  --blue1:#091353;
+  --light:#fafafa;
+  --gap: 6rem;
+
+
+}
+#web_header .navbar-brand img{
+  height: 3rem;
+}
+#web_header {
+  padding: 0.8rem 0;
+  background: var(--bs-white);
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+#web_header .navbar-nav li a{
+  color: var(--blue1);
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+#web_header .navbar-nav {
+  gap: 2rem;
+}
+#web_header .navbar-nav li a:hover, #web_header .navbar-nav .dropdown-menu li a:hover{
+  color:#8a8ea8;
+  background: none !important;
+}
+#web_header .navbar-nav .dropdown-menu{
+background: #272d53;
+padding: 1em;
+border-radius: 2px;
+}
+#web_header .navbar-nav .dropdown-menu li a{
+  color: #f2f2f2;
+  font-size: 1.5rem;
+  font-family: var(--secondary);
+  font-weight: 600;
+  background: transparent !important;
+  padding: .382em;
+}
+#web_header .navbar-nav.right_nav li a{
+ min-height: 4rem;
+ box-shadow: transparent 0px 0px 0px 0.0625rem inset;
+ color: rgb(76, 0, 255);
+ padding: 0.8rem 1.6rem;
+ font-weight: 600;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ text-transform: uppercase;
+}
+/* #web_header .navbar-nav.right_nav li:last-child a {
+  background: rgb(76, 0, 255);
+  color: var(--bs-white);
+  border-radius: 1rem;
+
+}
+#web_header .navbar-nav.right_nav li:last-child a:hover{
+  background: rgb(64, 0, 204) !important;
+} */
+
+#web_header .navbar-nav.right_nav li a {
+  background: rgb(76, 0, 255);
+  color: var(--bs-white);
+  border-radius: 1rem;
+
+}
+#web_header .navbar-nav.right_nav li a:hover{
+  background: rgb(64, 0, 204) !important;
+}
+.show_ipad{
+  display: none;
+  margin-top: 4rem;
+}
+#web_header .show_ipad li a{
+  border: 0px;
+  border-inline-start: 3px solid transparent;
+  color: rgba(26, 29, 32, 0.9);
+  display: inline-flex
+;
+  flex-wrap: nowrap;
+  font-size: 16px;
+  font-weight: 400;
+  min-height: 48px;
+  padding-block: 8px;
+  padding-inline: 20px 24px;
+  text-align: start;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+@media (max-width:992px) {
+  #web_header .navbar-toggler{
+    box-shadow: none !important;
+  }
+  #web_header .navbar-collapse.collapse{
+    background-color: rgb(255, 255, 255);
+    position: fixed;
+    overflow: hidden;
+    z-index: 800;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    border-right: 1px solid rgba(25, 24, 35, 0.15);
+    box-shadow: rgba(25, 24, 35, 0.15) 32px 0px 64px 0px;
+  }
+  #web_header .navbar-collapse.collapse.show{
+    width: 260px;
+  }
+  .show_ipad{
+    display: block;
+  }
+}
