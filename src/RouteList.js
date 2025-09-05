@@ -1,36 +1,55 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {
   BrowserRouter,
   Navigate,
   Route,
-  // BrowserRouter as Router,
   Routes,
+  Outlet,
 } from "react-router-dom";
+
+// Public screens
 import ContactUs from "./screens/ContactUs";
-
-import ScrollToTop from "./component/ScrollToTop";
-
-import Footer from "./component/Footer";
-import Header from "./component/Header";
-import Home from "./screens/Home";
-import Login from "./screens/Login";
-import Signup from "./screens/Signup";
-
-import PrivateRoute from "./PrivateRoute";
-
 import AboutUs from "./screens/AboutUs";
 import Faq from "./screens/Faq";
 import TermCondition from "./screens/TermCondition";
+import Home from "./screens/LandingPage"; // marketing/landing page (public)
+import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+import Footer from "./component/Footer";
+import Header from "./component/Header";
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
 import ResetPassword from "./screens/ResetPassword";
-import Dashboard from "./screens/Dashboard";
-import Campaigns from "./screens/Campaigns";
-import Flows from "./screens/Flows";
 
+// Auth and utilities
+import PrivateRoute from "./PrivateRoute";
+import ScrollToTop from "./component/ScrollToTop";
+
+// New layout + dynamic routing sources
+import AppLayout from "./layouts/AppLayout";
+import routeMap from "./routes/routeMap";
+import { componentsByKey } from "./screens";
+import { useSelector } from "react-redux";
+import LandingPage from "./screens/LandingPage";
+
+/**
+ * RouteList
+ * - Uses AppLayout which holds Header/Footer/Sidebar and an <Outlet/>
+ * - Public routes render without Sidebar (Sidebar hides when not logged in)
+ * - Protected app routes are generated from routeMap and wrapped by PrivateRoute
+ */
 function RouteList() {
-  const theme = useTheme();
+    const theme = useTheme();
+  // Build protected children from routeMap using the components registry
+  const protectedChildren = Object.entries(routeMap).map(([key, path]) => {
+    const Comp = componentsByKey[key] || (() => <div>TODO: {key}</div>);
+    return <Route key={key} path={path} element={<Comp />} />;
+  });
+  const authState = useSelector((state) => state.auth);
+  const { IsLoginData, isAuthenticated } = authState;
+  console.log("isLoginData in RouteList:", isAuthenticated);
+  
+
   return (
     <BrowserRouter>
       <Box
@@ -41,31 +60,43 @@ function RouteList() {
         <Header />
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<Navigate to="/home" replace />} />
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/signup" element={<Signup />} />
-
-          <Route exact path="/reset-password" element={<ResetPassword />} />
+          {/* App shell with Header/Footer/Sidebar and a content <Outlet /> */}
           <Route
-            exact
-            path="/home"
             element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
+              <AppLayout
+              isLoggedIn={isAuthenticated}
+                /* isLoggedIn comes from layout/store */ routeMap={routeMap}
+              />
             }
-          />
-          <Route exact path="/campaigns" element={<Campaigns />} />
-          <Route exact path="/flows" element={<Flows />} />
+          >
+            {/* Public routes (no auth required) */}
+            {/* <Route index element={<Home />} /> */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/*footer routes */}
-          <Route exact path="/contact-us" element={<ContactUs />} />
-          <Route exact path="/about-us" element={<AboutUs />} />
-          <Route exact path="/faq" element={<Faq />} />
-          <Route exact path="/term-conditions" element={<TermCondition />} />
+            {/* Footer links (public) */}
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/term-conditions" element={<TermCondition />} />
+
+            {/* Protected app area: wrap dynamic routes in PrivateRoute */}
+            <Route
+              element={
+                <PrivateRoute>
+                  <Outlet />
+                </PrivateRoute>
+              }
+            >
+              {protectedChildren}
+            </Route>
+
+            {/* Catch-all -> dashboard home */}
+            <Route path="*" element={<Navigate to={'/'} replace />} />
+          </Route>
         </Routes>
-
         <Footer />
       </Box>
     </BrowserRouter>

@@ -28,7 +28,7 @@ const drawerWidthCollapsed = 76;
  * - Notifies layout of current width via CSS var --sidebar-width so content can offset if desired
  */
 export default function Sidebar({
-  isLoggedIn = true,
+  isLoggedIn = false,
   headerHeight = 0, // e.g., AppBar height in px
   footerHeight = 0, // e.g., Footer height in px
   routeMap: routeMapProp,
