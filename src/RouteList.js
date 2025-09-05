@@ -46,8 +46,8 @@ function RouteList() {
     return <Route key={key} path={path} element={<Comp />} />;
   });
   const authState = useSelector((state) => state.auth);
-  const { IsLoginData, isAuthenticated } = authState;
-  console.log("isLoginData in RouteList:", isAuthenticated);
+  const { isAuthenticated } = authState;
+  // console.log("isLoginData in RouteList:", isAuthenticated);
 
   return (
     <BrowserRouter>
@@ -79,7 +79,7 @@ function RouteList() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<Faq />} />
-            <Route path="/term-conditions" element={<TermCondition />} />
+            <Route path="/terms-conditions" element={<TermCondition />} />
 
             {/* Protected app area: wrap dynamic routes in PrivateRoute */}
             <Route
@@ -97,7 +97,7 @@ function RouteList() {
           </Route>
         </Routes>
 
-          {!isAuthenticated && <Footer />}
+        {!isAuthenticated && <Footer />}
       </Box>
     </BrowserRouter>
   );

@@ -44,7 +44,7 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
           </Suspense>
         </Box>
       </Box>
-      <Footer/>
+      {/* <Footer/> */}
       {/* Your <Footer /> goes here */}
     </Box>
   );
