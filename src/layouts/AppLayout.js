@@ -1,8 +1,9 @@
 // src/layouts/AppLayout.jsx
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../screens/Sidebar";
+
 import { Suspense, useEffect } from "react";
+import Sidebar from "./Sidebar";
 
 const HEADER_H = 82; // match your AppBar
 const FOOTER_H = 56; // match your Footer

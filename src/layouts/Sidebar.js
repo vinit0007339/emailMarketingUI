@@ -129,29 +129,7 @@ export default function Sidebar({
         PaperProps={{ elevation: 1 }}
         aria-label="Primary"
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1.5,
-            px: 2,
-            mb: 1,
-            fontWeight: 700,
-            fontSize: 18,
-            userSelect: "none",
-          }}
-          aria-label="App brand"
-        >
-          <Box
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: 2,
-              background: "linear-gradient(135deg, #0a84ff, #8a2be2)",
-            }}
-          />
-          {!collapsed && <Typography noWrap>emailMarketingUI</Typography>}
-        </Box>
+
         <IconButton
           onClick={() => setCollapsed((v) => !v)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -213,7 +191,11 @@ export default function Sidebar({
                   }}
                   aria-hidden="true"
                 >
-                  <Typography component="span" variant="body1" sx={{ lineHeight: 1 }}>
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    sx={{ lineHeight: 1 }}
+                  >
                     {n.emoji}
                   </Typography>
                 </ListItemIcon>
@@ -232,9 +214,6 @@ export default function Sidebar({
           ))}
         </List>
       </Drawer>
-
-      {/* Main content placeholder (kept for layout flex context if needed) */}
-      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", minWidth: 0 }} />
     </Box>
   );
 }
