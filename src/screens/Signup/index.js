@@ -84,97 +84,94 @@ const Signup = () => {
   };
 
   return (
-    <section className="sec-padd form_sec">
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <Paper
-          elevation={3}
-          sx={{
-            p: 4,
-            maxWidth: 500,
-            width: "100%",
-            borderRadius: 2,
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            color="primary"
-            gutterBottom
-          >
-            Create Account
-          </Typography>
-          <Typography variant="body2" sx={{ mb: 3 }}>
-            Please fill in the form to continue
-          </Typography>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      sx={{ minHeight: "80vh", py: 4 }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          maxWidth: 500,
+          width: "100%",
+          borderRadius: 2,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+          Create Account
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 3 }}>
+          Please fill in the form to continue
+        </Typography>
 
-          <form onSubmit={formik.handleSubmit} noValidate>
-            <TextField
-              fullWidth
-              label="First Name"
-              placeholder="Enter first name"
-              variant="outlined"
-              id="firstName"
-              name="firstName"
-              value={formik.values.firstName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.firstName && Boolean(formik.errors.firstName)
-              }
-              helperText={formik.touched.firstName && formik.errors.firstName}
-              sx={{ mb: 2 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: theme.palette.text.secondary }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Last Name"
-              placeholder="Enter last name"
-              variant="outlined"
-              id="lastName"
-              name="lastName"
-              value={formik.values.lastName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              sx={{ mb: 2 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: theme.palette.text.secondary }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              placeholder="Enter email"
-              variant="outlined"
-              id="email"
-              name="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-              sx={{ mb: 2 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon sx={{ color: theme.palette.text.secondary }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {/* <TextField
+        <form onSubmit={formik.handleSubmit} noValidate>
+          <TextField
+            fullWidth
+            label="First Name"
+            placeholder="Enter first name"
+            variant="outlined"
+            id="firstName"
+            name="firstName"
+            value={formik.values.firstName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+            helperText={formik.touched.firstName && formik.errors.firstName}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon sx={{ color: theme.palette.text.secondary }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            fullWidth
+            label="Last Name"
+            placeholder="Enter last name"
+            variant="outlined"
+            id="lastName"
+            name="lastName"
+            value={formik.values.lastName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+            helperText={formik.touched.lastName && formik.errors.lastName}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon sx={{ color: theme.palette.text.secondary }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            fullWidth
+            label="Email"
+            placeholder="Enter email"
+            variant="outlined"
+            id="email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon sx={{ color: theme.palette.text.secondary }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          {/* <TextField
               fullWidth
               label="Username"
               placeholder="Enter username"
@@ -197,43 +194,42 @@ const Signup = () => {
                 ),
               }}
             /> */}
-            <TextField
-              fullWidth
-              label="Password"
-              placeholder="Enter password"
-              variant="outlined"
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                ),
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon sx={{ color: theme.palette.text.secondary }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
-            <DCButton fullWidth type="submit" sx={{ mt: 1 }}>
-              Register
-            </DCButton>
-          </form>
-        </Paper>
-      </Box>
-    </section>
+          <TextField
+            fullWidth
+            label="Password"
+            placeholder="Enter password"
+            variant="outlined"
+            type={showPassword ? "text" : "password"}
+            id="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              ),
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon sx={{ color: theme.palette.text.secondary }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 2 }}
+          />
+          <DCButton fullWidth type="submit" sx={{ mt: 1 }}>
+            Register
+          </DCButton>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

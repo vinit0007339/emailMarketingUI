@@ -5,10 +5,11 @@ import {
   TextField,
   Paper,
   Link,
+  IconButton,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import "../Login/login.css";
+
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../redux/Reducers/GlobalReducer/globalSlice";
 import { addData } from "../../Utility/API";
@@ -22,12 +23,14 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import { InputAdornment } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ForgetPassword from "../ForgetPassword";
 
 const Login = () => {
   const theme = useTheme();
   const [forgetModal, setForgetModal] = useState(false);
   const [open, setOpen] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
   const handleContinue = (formData) => {
     console.log("User data:", formData);
     // formData = { agree: true, name: "...", email: "...", password: "..." }
@@ -89,13 +92,18 @@ const Login = () => {
   };
 
   return (
-    <section className="sec-padd form_sec">
+    <>
       <ForgetPassword
         open={forgetModal}
         onClose={() => setForgetModal(false)}
       />
       <Container>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ minHeight: "80vh", py: 4 }}
+        >
           <Paper
             elevation={3}
             sx={{
@@ -146,7 +154,7 @@ const Login = () => {
                 label="Password"
                 placeholder="Enter your password"
                 variant="outlined"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={formik.values.password}
@@ -157,10 +165,20 @@ const Login = () => {
                 }
                 helperText={formik.touched.password && formik.errors.password}
                 sx={{ mb: 2 }}
-                InputProps={{
+                  InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon sx={{ color: theme.palette.text.secondary }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -204,7 +222,7 @@ const Login = () => {
           </Paper>
         </Box>
       </Container>
-    </section>
+    </>
   );
 };
 

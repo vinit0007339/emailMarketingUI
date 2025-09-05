@@ -25,6 +25,9 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import ResetPassword from "./screens/ResetPassword";
+import Dashboard from "./screens/Dashboard";
+import Campaigns from "./screens/Campaigns";
+import Flows from "./screens/Flows";
 
 function RouteList() {
   const theme = useTheme();
@@ -44,6 +47,17 @@ function RouteList() {
           <Route exact path="/signup" element={<Signup />} />
 
           <Route exact path="/reset-password" element={<ResetPassword />} />
+          <Route
+            exact
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route exact path="/campaigns" element={<Campaigns />} />
+          <Route exact path="/flows" element={<Flows />} />
 
           {/*footer routes */}
           <Route exact path="/contact-us" element={<ContactUs />} />

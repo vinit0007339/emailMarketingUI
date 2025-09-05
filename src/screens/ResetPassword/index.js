@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Container, Typography, TextField, Paper } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import "../Login/login.css";
+
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../redux/Reducers/GlobalReducer/globalSlice";
 import { useSnackbarContext } from "../../component/SnackbarContext";

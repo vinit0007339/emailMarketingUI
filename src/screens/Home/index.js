@@ -305,6 +305,145 @@ const AiAssistSection = () => {
   );
 };
 
+const ScaleSection = () => (
+  <Box
+    sx={{
+      py: { xs: 6, md: 10 },
+      backgroundColor: (t) =>
+        t.palette.mode === "dark" ? t.palette.grey[900] : t.palette.grey[50],
+    }}
+  >
+    <Container>
+      <Stack spacing={2} alignItems="center" textAlign="center" mb={6}>
+        <Typography
+          variant="overline"
+          sx={{ color: "success.main", fontWeight: 700 }}
+        >
+          A PLATFORM YOU CAN TRUST
+        </Typography>
+        <Typography variant="h4" fontWeight={900}>
+          Designed to help you scale
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          maxWidth={800}
+          sx={{ fontSize: { xs: 14, sm: 16 } }}
+        >
+          From small startups to publicly traded enterprises with hundreds of
+          millions of users, we built our platform to grow alongside you.
+          Delighting our customers, no matter your role or tech stack in place
+          remains at the heart of every decision we make.
+        </Typography>
+      </Stack>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, md: 4 },
+              borderRadius: 4,
+              bgcolor: (t) =>
+                t.palette.mode === "dark" ? "#f3e5f5" : "#fce4ec",
+            }}
+          >
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              Klar
+            </Typography>
+            <Typography variant="h4" fontWeight={900}>
+              17M
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              monthly multi-channel messages
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              14%
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              increase in first transactions
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              12%
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              improvement in late payments
+            </Typography>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, md: 4 },
+              borderRadius: 4,
+              bgcolor: (t) =>
+                t.palette.mode === "dark" ? "#e3f2fd" : "#e8eaf6",
+            }}
+          >
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              Livestorm
+            </Typography>
+            <Typography variant="h4" fontWeight={900}>
+              135%
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              increase in monthly G2 reviews
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              36%
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              conversion rate for billing emails
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              68%
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              avg. email open rate
+            </Typography>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, md: 4 },
+              borderRadius: 4,
+              bgcolor: (t) =>
+                t.palette.mode === "dark" ? "#e8f5e9" : "#f1f8e9",
+            }}
+          >
+            <Typography variant="h6" fontWeight={700} gutterBottom>
+              Musora
+            </Typography>
+            <Typography variant="h4" fontWeight={900}>
+              4%
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              increase in win-back conversions
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              35
+            </Typography>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              person-hours saved per week
+            </Typography>
+            <Typography variant="h6" fontWeight={800}>
+              10x
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              more real-time data processed
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
+  </Box>
+);
+
 const Home = () => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -541,6 +680,8 @@ const Home = () => {
         </Grid>
       </Container>
 
+      <ScaleSection />
+
       {/* FINAL CTA */}
       <Container sx={{ pb: { xs: 8, md: 12 } }}>
         <Paper
@@ -582,6 +723,7 @@ const Home = () => {
           </Stack>
         </Paper>
       </Container>
+
     </>
   );
 };
