@@ -107,7 +107,8 @@ function Header() {
 
   return (
     <AppBar
-      position="static"
+      // position="static"
+       position="fixed"
       elevation={1}
       sx={{ bgcolor: theme.palette.background.default }}
     >

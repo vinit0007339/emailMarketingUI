@@ -39,7 +39,7 @@ import LandingPage from "./screens/LandingPage";
  * - Protected app routes are generated from routeMap and wrapped by PrivateRoute
  */
 function RouteList() {
-    const theme = useTheme();
+  const theme = useTheme();
   // Build protected children from routeMap using the components registry
   const protectedChildren = Object.entries(routeMap).map(([key, path]) => {
     const Comp = componentsByKey[key] || (() => <div>TODO: {key}</div>);
@@ -48,7 +48,6 @@ function RouteList() {
   const authState = useSelector((state) => state.auth);
   const { IsLoginData, isAuthenticated } = authState;
   console.log("isLoginData in RouteList:", isAuthenticated);
-  
 
   return (
     <BrowserRouter>
@@ -57,14 +56,14 @@ function RouteList() {
           bgcolor: theme.palette.background.default,
         }}
       >
-        <Header />
+        {!isAuthenticated && <Header />}
         <ScrollToTop />
         <Routes>
           {/* App shell with Header/Footer/Sidebar and a content <Outlet /> */}
           <Route
             element={
               <AppLayout
-              isLoggedIn={isAuthenticated}
+                isLoggedIn={isAuthenticated}
                 /* isLoggedIn comes from layout/store */ routeMap={routeMap}
               />
             }
@@ -94,10 +93,11 @@ function RouteList() {
             </Route>
 
             {/* Catch-all -> dashboard home */}
-            <Route path="*" element={<Navigate to={'/'} replace />} />
+            <Route path="*" element={<Navigate to={"/"} replace />} />
           </Route>
         </Routes>
-        <Footer />
+
+          {!isAuthenticated && <Footer />}
       </Box>
     </BrowserRouter>
   );

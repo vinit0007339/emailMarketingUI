@@ -4,6 +4,8 @@ import { Outlet } from "react-router-dom";
 
 import { Suspense, useEffect } from "react";
 import Sidebar from "./Sidebar";
+import Header from "../component/Header";
+import Footer from "../component/Footer";
 
 const HEADER_H = 82; // match your AppBar
 const FOOTER_H = 56; // match your Footer
@@ -19,11 +21,12 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Your <AppBar /> goes here */}
+      <Header/>
       <Box sx={{ flex: 1, display: "flex", position: "relative" }}>
         <Sidebar
           isLoggedIn={isLoggedIn}
           headerHeight={HEADER_H}
-          footerHeight={FOOTER_H}
+        //   footerHeight={FOOTER_H}
           routeMap={routeMap}
         />
         <Box
@@ -31,7 +34,7 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
           sx={{
             flex: 1,
             // pl: isLoggedIn ? { sm: "var(--sidebar-width)" } : 0,
-            // pt: `${HEADER_H}px`,
+            pt: `${HEADER_H}px`,
             // pb: `${FOOTER_H}px`,
             minWidth: 0,
           }}
@@ -41,6 +44,7 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
           </Suspense>
         </Box>
       </Box>
+      <Footer/>
       {/* Your <Footer /> goes here */}
     </Box>
   );

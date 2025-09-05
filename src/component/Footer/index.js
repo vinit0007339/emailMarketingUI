@@ -1,28 +1,18 @@
-import React from "react";
-import { useTheme } from "@mui/material/styles";
+import {
+  KeyboardArrowUp
+} from "@mui/icons-material";
 import {
   Box,
-  Grid,
-  Typography,
-  Link,
-  IconButton,
-  Divider,
   Container,
+  Grid,
+  IconButton,
+  Link,
   Tooltip,
-  TextField,
-  InputAdornment,
+  Typography
 } from "@mui/material";
-import CylonLogoNew from "./../../images/NewLogo.png";
-import {
-  Facebook,
-  Work,
-  GitHub,
-  Send,
-  Info,
-  KeyboardArrowUp,
-} from "@mui/icons-material";
-import DCButton from "../DCButton";
+import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import CylonLogoNew from "./../../images/NewLogo.png";
 
 const Footer = () => {
   const theme = useTheme();
@@ -43,97 +33,6 @@ const Footer = () => {
       className="footer_Web"
     >
       <Container maxWidth="lg">
-        {/* <Grid container spacing={4} alignItems="flex-start">
-          
-          <Grid item xs={12} md={12}>
-            <Grid container spacing={4} justifyContent="space-between">
-              <Grid item xs={12} sm={6} md={5}>
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  gutterBottom
-                  sx={{
-                    fontSize: "1.50rem",
-                    color: theme.palette.text.default,
-                  }}
-                >
-                  Use Cases
-                </Typography>
-                {[
-                  "Web-designers",
-                  "Marketers",
-                  "Small Business",
-                  "Website Builder",
-                ].map((text) => (
-                  <Typography
-                    variant="body2"
-                    key={text}
-                    sx={{ my: 0.5, fontSize: "1rem", mb: 1 }}
-                  >
-                    <Link
-                      href="#"
-                      underline="hover"
-                      sx={{
-                        color: theme.palette.text.default,
-                        display: "inline-block",
-                        transition: "transform .15s ease, color .15s ease",
-                        "&:hover": {
-                          transform: "translateX(2px)",
-                          color: theme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {text}
-                    </Link>
-                  </Typography>
-                ))}
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={5}>
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  gutterBottom
-                  sx={{
-                    fontSize: "1.50rem",
-                    color: theme.palette.text.default,
-                  }}
-                >
-                  Company
-                </Typography>
-                {[
-                  { label: "About Us", path: "/about-us" },
-                  { label: "FAQs", path: "/faq" },
-                  { label: "Privacy Policy", path: "/term-conditions" },
-                  { label: "Contact Us", path: "/contact-us" },
-                ].map(({ label, path }) => (
-                  <Typography
-                    variant="body2"
-                    key={label}
-                    onClick={() => navigate(path)}
-                    sx={{ my: 0.5, fontSize: "1rem", mb: 1, cursor: "pointer" }}
-                  >
-                    <Link
-                      underline="hover"
-                      sx={{
-                        color: theme.palette.text.default,
-                        transition: "transform .15s ease, color .15s ease",
-                        display: "inline-block",
-                        "&:hover": {
-                          transform: "translateX(2px)",
-                          color: theme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {label}
-                    </Link>
-                  </Typography>
-                ))}
-              </Grid>
-            </Grid>
-          </Grid>
-      
-        </Grid> */}
         <Grid container spacing={4} sx={{ width: "100%" }}>
           {/* Brand + Tagline + Social */}
           <Grid item xs={12} md={4}>
@@ -144,7 +43,6 @@ const Footer = () => {
                 alt="Brand"
                 sx={{ height: 36 }}
               />
-              {/* <Typography variant="h6" sx={{ fontWeight: 800, color: theme.palette.text.default }}>DocuSign UI</Typography> */}
             </Box>
             <Typography
               variant="body2"
@@ -153,6 +51,14 @@ const Footer = () => {
               Streamline agreements with fast e‑sign, smart fields, and a clean,
               responsive UI.
             </Typography>
+            <Grid item xs={12} md="auto">
+              <Typography
+                variant="body2"
+                sx={{ color: theme.palette.text.default }}
+              >
+                © {new Date().getFullYear()} All Rights Reserved
+              </Typography>
+            </Grid>
           </Grid>
 
           {/* Quick Links */}
@@ -233,46 +139,7 @@ const Footer = () => {
               ))}
             </Box>
           </Grid>
-        </Grid>
 
-        <Divider sx={{ bgcolor: theme.palette.divider, my: 3 }} />
-
-        <Grid
-          container
-          spacing={2}
-          justifyContent="space-between"
-          alignItems="center"
-          className="last_footer"
-        >
-          <Grid item xs={12} md="auto">
-            <Typography
-              variant="body2"
-              sx={{ color: theme.palette.text.default }}
-            >
-              © {new Date().getFullYear()} All Rights Reserved
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md="auto">
-            <Box display="flex" gap={2} flexWrap="wrap">
-              {[
-                "Privacy Policy",
-                "Terms of Use",
-                "Sales and Refunds",
-                "Legal",
-                "Site Map",
-              ].map((text) => (
-                <Link
-                  href="#"
-                  key={text}
-                  sx={{ color: theme.palette.text.default }}
-                  underline="hover"
-                  variant="body2"
-                >
-                  {text}
-                </Link>
-              ))}
-            </Box>
-          </Grid>
           <Grid item xs={12} md="auto">
             <Tooltip title="Back to top">
               <IconButton
@@ -280,7 +147,7 @@ const Footer = () => {
                 onClick={scrollToTop}
                 sx={{
                   bgcolor: "primary.main",
-                  color: "#fff" ,
+                  color: "#fff",
                   "&:hover": { bgcolor: "primary.main", color: "#fff" },
                 }}
               >

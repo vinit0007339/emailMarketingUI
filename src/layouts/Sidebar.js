@@ -93,7 +93,7 @@ export default function Sidebar({
     headerHeight > 0 || footerHeight > 0
       ? {
           top: `${headerHeight}px`,
-          height: `calc(100vh - ${headerHeight + footerHeight}px)`,
+          height: '100vh'//  `calc(100vh - ${footerHeight}px)`,
         }
       : {};
 
