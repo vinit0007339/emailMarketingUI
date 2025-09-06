@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import DCButton from "../../component/DCButton";
 
 export default function Dashboard() {
   const theme = useTheme();
@@ -41,10 +42,10 @@ export default function Dashboard() {
         display: "flex",
         flexDirection: "column",
         minHeight: 420,
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 18px 60px rgba(0,0,0,.12)'
-        }
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow: "0 18px 60px rgba(0,0,0,.12)",
+        },
       }}
       aria-label={ariaLabel}
     >
@@ -71,124 +72,262 @@ export default function Dashboard() {
     </Box>
   );
 
-  const ActionButton = ({ children }) => (
-    <Button
-      variant="contained"
-      fullWidth
-      sx={{
-        height: 44,
-        borderRadius: 1.5,
-        fontWeight: 700,
-        backgroundColor: "#111",
-        textTransform: "none",
-        '&:hover': { backgroundColor: "#000" },
-      }}
-    >
-      {children}
-    </Button>
-  );
-
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#fbfaf8" }}>
-      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <Box sx={{ mx: "auto", px: { xs: 2, sm: 3 }, py: 4, flexGrow: 1 }}> 
-          {/* // maxWidth: 1180, */}
-          {/* Title */}
-          <Typography variant="h3" fontWeight={800} letterSpacing={-0.5} gutterBottom>
-            Get started with Cyclon Email
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" mb={2}>
-            Use this personalized guide to set up your account and start sending.
-          </Typography>
-
-          {/* Top pills */}
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} mb={3}>
-            <Pill label={<><b>Contacts:</b>&nbsp;I don't have contacts yet</>} />
-            <Pill label={<><b>Channels:</b>&nbsp;Email</>} />
-          </Stack>
-
-          {/* Section title with Recommended chip */}
-          <Stack direction="row" alignItems="center" spacing={1} mb={2}>
-            <Typography variant="h6">
-              First, connect your data and start collecting subscribers
+    <>
+      <Box sx={{ display: "flex", bgcolor: "#fbfaf8" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+          }}
+        >
+          <Box sx={{ mx: "auto", px: { xs: 2, sm: 3 }, py: 4, flexGrow: 1 }}>
+            {/* // maxWidth: 1180, */}
+            {/* Title */}
+            <Typography
+              variant="h3"
+              fontWeight={800}
+              letterSpacing={-0.5}
+              gutterBottom
+            >
+              Get started with Cyclon Email
             </Typography>
-            <Chip
-              icon={<StarRoundedIcon sx={{ fontSize: 18 }} />}
-              label="Recommended"
-              color="primary"
-              size="small"
-              sx={{ fontWeight: 700, bgcolor: theme.palette.primary.light, color: theme.palette.primary.contrastText, '& .MuiChip-icon': { color: theme.palette.primary.contrastText } }}
-            />
-          </Stack>
+            <Typography variant="subtitle1" color="text.secondary" mb={2}>
+              Use this personalized guide to set up your account and start
+              sending.
+            </Typography>
 
-          {/* Cards */}
-          <Grid container spacing={2}>
-            {/* Card 1 */}
-            <Grid item xs={12} sm={6} md={4}>
-              <GradientCard ariaLabel="Connect your business platform">
-                <ImagePane emoji="🧩" />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" fontWeight={700} gutterBottom>
-                    Connect your business platform
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                    About 15 minutes
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Connect your website platform to access your data and enable publishing sign‑up forms and flows.
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ px: 2, pb: 2 }}>
-                  <ActionButton>Connect platform</ActionButton>
-                </CardActions>
-              </GradientCard>
+            {/* Top pills */}
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1} mb={3}>
+              <Pill
+                label={
+                  <>
+                    <b>Contacts:</b>&nbsp;I don't have contacts yet
+                  </>
+                }
+              />
+              <Pill
+                label={
+                  <>
+                    <b>Channels:</b>&nbsp;Email
+                  </>
+                }
+              />
+            </Stack>
+
+            {/* Section title with Recommended chip */}
+            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+              <Typography variant="h6">
+                First, connect your data and start collecting subscribers
+              </Typography>
+              <Chip
+                icon={<StarRoundedIcon sx={{ fontSize: 18 }} />}
+                label="Recommended"
+                color="primary"
+                size="small"
+                sx={{
+                  fontWeight: 700,
+                  bgcolor: theme.palette.primary.light,
+                  color: theme.palette.primary.contrastText,
+                  "& .MuiChip-icon": {
+                    color: theme.palette.primary.contrastText,
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* Cards */}
+            <Grid container spacing={2}>
+              {/* Card 3 */}
+              <Grid item xs={12} sm={6} md={4}>
+                <GradientCard ariaLabel="Create an email welcome flow">
+                  <ImagePane emoji="✉️" />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                      Create a campaign
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      gutterBottom
+                    >
+                      About 15 minutes
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Send a one-time targeted message to a select group of
+                      customers. Use campaigns for sales, promotions, and
+                      exclusive deals. Then, track your data here.
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ px: 2, pb: 2 }}>
+                    <DCButton fullWidth>Create campaign</DCButton>
+                  </CardActions>
+                </GradientCard>
+              </Grid>
+
+              {/* Card 2 */}
+              <Grid item xs={12} sm={6} md={4}>
+                <GradientCard ariaLabel="Create a sign‑up form">
+                  <ImagePane emoji="🧾" />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                      Create a sign‑up form
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      gutterBottom
+                    >
+                      About 10 minutes
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Create a form on your website to grow your audience and
+                      start building customer relationships. Customize it to
+                      match your brand and capture essential information.
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ px: 2, pb: 2 }}>
+                    <DCButton fullWidth>Create Form</DCButton>
+                  </CardActions>
+                </GradientCard>
+              </Grid>
+
+              {/* Card 1 */}
+              <Grid item xs={12} sm={6} md={4}>
+                <GradientCard ariaLabel="Connect your business platform">
+                  <ImagePane emoji="🧩" />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                      Create a flow
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      gutterBottom
+                    >
+                      About 15 minutes
+                    </Typography>
+                    <Typography color="text.secondary">
+                      Boost sales and increase customer engagement with targeted
+                      messages. Select a pre-built template or make your own
+                      flow. Then, track your data here.
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ px: 2, pb: 2 }}>
+                    <DCButton fullWidth>Create Flow</DCButton>
+                  </CardActions>
+                </GradientCard>
+              </Grid>
             </Grid>
+          </Box>
+        </Box>
+      </Box>
+      {/* Business performance summary */}
+      <Box sx={{ mx: "auto", px: { xs: 2, sm: 3 }, pb: 4 }}>
+        <Card
+          sx={{
+            borderRadius: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "none",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+            }}
+          >
+            <Box>
+              <Typography variant="h6" fontWeight={700}>
+                Business performance summary
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Aug 6, 2025 – Sep 5, 2025
+              </Typography>
+            </Box>
+            {/* <Button
+              variant="outlined"
+              sx={{ textTransform: "none", borderRadius: 1.5 }}
+            >
+              View dashboard
+            </Button> */}
+          </Box>
 
-            {/* Card 2 */}
-            <Grid item xs={12} sm={6} md={4}>
-              <GradientCard ariaLabel="Create a sign‑up form">
-                <ImagePane emoji="🧾" />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" fontWeight={700} gutterBottom>
-                    Create a sign‑up form
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                    About 10 minutes
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Create a form on your website to grow your audience and start building customer relationships.
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ px: 2, pb: 2 }}>
-                  <ActionButton>Create form</ActionButton>
-                </CardActions>
-              </GradientCard>
+          {/* Conversion summary */}
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              borderTop: "1px solid",
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              p: 2,
+            }}
+          >
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h4" fontWeight={700}>
+                0
+              </Typography>
+              <Typography variant="body2">Total conversions</Typography>
+              <Chip
+                label="0% vs. previous period"
+                size="small"
+                sx={{ mt: 1 }}
+              />
             </Grid>
-
-            {/* Card 3 */}
-            <Grid item xs={12} sm={6} md={4}>
-              <GradientCard ariaLabel="Create an email welcome flow">
-                <ImagePane emoji="✉️" />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" fontWeight={700} gutterBottom>
-                    Create an email welcome flow
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                    About 15 minutes
-                  </Typography>
-                  <Typography color="text.secondary">
-                    Create a flow that automatically sends a welcome message to new subscribers of your brand.
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ px: 2, pb: 2 }}>
-                  <ActionButton>Create flow</ActionButton>
-                </CardActions>
-              </GradientCard>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h4" fontWeight={700}>
+                0
+              </Typography>
+              <Typography variant="body2">
+                Attributed conversions (0.00% of total)
+              </Typography>
+              <Chip
+                label="0% vs. previous period"
+                size="small"
+                sx={{ mt: 1 }}
+              />
             </Grid>
           </Grid>
-        </Box>
-        {/* add below  this  */}
+
+          {/* Attributed conversions breakdown */}
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle1" fontWeight={700} gutterBottom>
+              Attributed conversions
+            </Typography>
+            <Grid container spacing={2}>
+              {[
+                { label: "Conversion rate", value: "0.00%" },
+                { label: "Campaigns", value: "0", sub: "0.00%" },
+                { label: "Flows", value: "0", sub: "0.00%" },
+                { label: "Email", value: "0", sub: "0.00%" },
+              ].map((item, idx) => (
+                <Grid key={idx} item xs>
+                  <Stack spacing={0.5} alignItems="center">
+                    <Typography variant="body2" fontWeight={600}>
+                      {item.label}
+                    </Typography>
+                    <Typography variant="body1">{item.value}</Typography>
+                    {item.sub && (
+                      <Typography variant="caption" color="text.secondary">
+                        {item.sub}
+                      </Typography>
+                    )}
+                  </Stack>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </Card>
       </Box>
-    </Box>
+    </>
   );
 }
