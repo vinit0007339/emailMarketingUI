@@ -47,70 +47,90 @@ function Header() {
   };
 
   const drawerContent = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
-      <List>
-        {[
-          "My Profile",
-          "Privacy & Security",
-          "Connected Apps",
-          "Identity Wallet",
-          "Signatures",
-          "Stamps",
-          "Language & Region",
-        ].map((text) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+    <Box sx={{ width: 320 }} role="presentation" onClick={handleDrawerToggle}>
+      <Box sx={{ p: 2 }}>
         {!isAuthenticated ? (
-          <>
-            <ListItem button onClick={() => navigate("/login")}>
-              <ListItemText primary="Login" />
-            </ListItem>
-            <ListItem button onClick={() => navigate("/signup")}>
-              <ListItemText primary="Sign Up" />
-            </ListItem>
-          </>
+          <Box sx={{ display: "grid", gap: 1.5 }}>
+            <DCButton onClick={() => navigate("/login")} variant="outlined">
+              Login
+            </DCButton>
+            <DCButton onClick={() => navigate("/signup")} variant="outlined">
+              Sign Up
+            </DCButton>
+          </Box>
         ) : (
           <>
-            <ListItem button onClick={() => navigate("/profile")}>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem
-              button
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}
+            >
+              <Avatar
+                sx={{
+                  bgcolor: theme.palette.background.primary,
+                  fontWeight: 600,
+                }}
+              >
+                {IsLoginData?.user?.first_name?.[0]?.toUpperCase() ?? ""}
+                {IsLoginData?.user?.last_name?.[0]?.toUpperCase() ?? ""}
+              </Avatar>
+              <Box>
+                <Typography fontWeight={700}>
+                  {IsLoginData?.user?.first_name} {IsLoginData?.user?.last_name}
+                </Typography>
+                <Typography variant="body2">
+                  {IsLoginData?.user?.email}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              sx={{ mb: 1, mt: 2, textTransform: "none" }}
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              Manage Profile
+            </Button>
+
+            <MenuItem
+              className="menu_2"
+              onClick={() => {
+                navigate("/user-signature");
+              }}
+            >
+              User Signature
+            </MenuItem>
+
+            <Divider sx={{ my: 1 }} />
+
+            <MenuItem className="menu_2">Feedback</MenuItem>
+
+            <MenuItem
+              className="menu_2"
               onClick={() => {
                 dispatch(setLoginData({ user: {}, isAuthenticated: false }));
                 localStorage.setItem("token", "");
                 navigate("/home");
               }}
             >
-              <ListItemText primary="Logout" />
-            </ListItem>
+              Log Out
+            </MenuItem>
           </>
         )}
-        {[
-          "My Profile",
-          "Privacy & Security",
-          "Connected Apps",
-          "Identity Wallet",
-          "Signatures",
-          "Stamps",
-          "Language & Region",
-        ].map((item) => (
-          <ListItem button key={item}>
-            <ListItemText primary={item} />
-          </ListItem>
-        ))}
-      </List>
+      </Box>
     </Box>
   );
 
   return (
     <AppBar
-      // position="static"
-       position="fixed"
+      position="fixed"
       elevation={1}
-      sx={{ bgcolor: theme.palette.background.default }}
+      color="default"
+      sx={{
+        bgcolor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+      }}
     >
       <Toolbar
         sx={{
@@ -129,13 +149,24 @@ function Header() {
         {isMobile ? (
           <>
             <Box sx={{ flexGrow: 1 }} />
-            <IconButton color="inherit" onClick={handleDrawerToggle}>
-              <MenuIcon />
+            <IconButton
+              onClick={handleDrawerToggle}
+              sx={{ color: theme.palette.text.primary }}
+            >
+              <MenuIcon sx={{ fontSize: 32 }} />
             </IconButton>
             <Drawer
               anchor="right"
               open={mobileOpen}
               onClose={handleDrawerToggle}
+              PaperProps={{
+                sx: {
+                  bgcolor: theme.palette.background.default,
+                  color: theme.palette.text.primary,
+                  "& .MuiSvgIcon-root": { color: "text.primary" },
+                  "& .MuiListItemIcon-root": { color: "text.primary" },
+                },
+              }}
             >
               {drawerContent}
             </Drawer>
@@ -188,12 +219,7 @@ function Header() {
                     <Typography variant="body2">
                       {IsLoginData.user?.email}
                     </Typography>
-                    {/* <Typography
-                      variant="body2"
-                      sx={{ color: "text.secondary", mb: 1 }}
-                    >
-                      Account #{authState.user?.accountId || "12345678"}
-                    </Typography> */}
+
                     <Button
                       variant="outlined"
                       fullWidth
@@ -205,10 +231,9 @@ function Header() {
                     >
                       Manage Profile
                     </Button>
+
                     <Divider sx={{ my: 1 }} />
-                    {/* <MenuItem onClick={handleMenuClose}>
-                      My Preferences
-                    </MenuItem> */}
+
                     <MenuItem className="menu_2" onClick={handleMenuClose}>
                       Feedback
                     </MenuItem>

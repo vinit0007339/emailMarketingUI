@@ -31,6 +31,7 @@ import routeMap from "./routes/routeMap";
 import { componentsByKey } from "./screens";
 import { useSelector } from "react-redux";
 import LandingPage from "./screens/LandingPage";
+import Profile from "./screens/Profile";
 
 /**
  * RouteList
@@ -91,6 +92,7 @@ function RouteList() {
             >
               {protectedChildren}
             </Route>
+            <Route path="/profile" element={<Profile />} />
 
             {/* Catch-all -> dashboard home */}
             <Route path="*" element={<Navigate to={"/"} replace />} />
