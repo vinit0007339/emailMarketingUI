@@ -22,9 +22,9 @@ export default function Dashboard() {
       variant="outlined"
       sx={{
         borderRadius: 2,
-        px: 1,
-        height: 32,
-        fontSize: 14,
+        px: { xs: 0.75, sm: 1 },
+        height: { xs: 26, sm: 32 },
+        fontSize: { xs: 12, sm: 14 },
         borderColor: "divider",
       }}
     />
@@ -91,10 +91,11 @@ export default function Dashboard() {
               fontWeight={800}
               letterSpacing={-0.5}
               gutterBottom
+              sx={{ fontSize: { xs: 22, sm: 28, md: 32 }, lineHeight: { xs: 1.25, sm: 1.3 } }}
             >
               Get started with Cyclon Email
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" mb={2}>
+            <Typography variant="subtitle1" color="text.secondary" mb={2} sx={{ fontSize: { xs: 12.5, sm: 14 } }}>
               Use this personalized guide to set up your account and start
               sending.
             </Typography>
@@ -145,7 +146,7 @@ export default function Dashboard() {
                 <GradientCard ariaLabel="Create an email welcome flow">
                   <ImagePane emoji="✉️" />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <Typography variant="h6" fontWeight={700} gutterBottom sx={{ fontSize: { xs: 16, sm: 18 } }}>
                       Create a campaign
                     </Typography>
                     <Typography
@@ -156,7 +157,7 @@ export default function Dashboard() {
                     >
                       About 15 minutes
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography color="text.secondary" sx={{ fontSize: { xs: 12, sm: 13.5 } }}>
                       Send a one-time targeted message to a select group of
                       customers. Use campaigns for sales, promotions, and
                       exclusive deals. Then, track your data here.
@@ -173,7 +174,7 @@ export default function Dashboard() {
                 <GradientCard ariaLabel="Create a sign‑up form">
                   <ImagePane emoji="🧾" />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <Typography variant="h6" fontWeight={700} gutterBottom sx={{ fontSize: { xs: 16, sm: 18 } }}>
                       Create a sign‑up form
                     </Typography>
                     <Typography
@@ -184,7 +185,7 @@ export default function Dashboard() {
                     >
                       About 10 minutes
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography color="text.secondary" sx={{ fontSize: { xs: 12, sm: 13.5 } }}>
                       Create a form on your website to grow your audience and
                       start building customer relationships. Customize it to
                       match your brand and capture essential information.
@@ -201,7 +202,7 @@ export default function Dashboard() {
                 <GradientCard ariaLabel="Connect your business platform">
                   <ImagePane emoji="🧩" />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" fontWeight={700} gutterBottom>
+                    <Typography variant="h6" fontWeight={700} gutterBottom sx={{ fontSize: { xs: 16, sm: 18 } }}>
                       Create a flow
                     </Typography>
                     <Typography
@@ -212,7 +213,7 @@ export default function Dashboard() {
                     >
                       About 15 minutes
                     </Typography>
-                    <Typography color="text.secondary">
+                    <Typography color="text.secondary" sx={{ fontSize: { xs: 12, sm: 13.5 } }}>
                       Boost sales and increase customer engagement with targeted
                       messages. Select a pre-built template or make your own
                       flow. Then, track your data here.
@@ -246,10 +247,10 @@ export default function Dashboard() {
             }}
           >
             <Box>
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6" fontWeight={700} sx={{ fontSize: { xs: 16, sm: 18 } }}>
                 Business performance summary
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 12, sm: 13 } }}>
                 Aug 6, 2025 – Sep 5, 2025
               </Typography>
             </Box>
@@ -273,7 +274,7 @@ export default function Dashboard() {
             }}
           >
             <Grid item xs={12} sm={6}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography variant="h4" fontWeight={700} sx={{ fontSize: { xs: 28, sm: 34 } }}>
                 0
               </Typography>
               <Typography variant="body2">Total conversions</Typography>
@@ -284,7 +285,7 @@ export default function Dashboard() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography variant="h4" fontWeight={700} sx={{ fontSize: { xs: 28, sm: 34 } }}>
                 0
               </Typography>
               <Typography variant="body2">
@@ -312,10 +313,10 @@ export default function Dashboard() {
               ].map((item, idx) => (
                 <Grid key={idx} item xs>
                   <Stack spacing={0.5} alignItems="center">
-                    <Typography variant="body2" fontWeight={600}>
+                    <Typography variant="body2" fontWeight={600} sx={{ fontSize: { xs: 12, sm: 13 } }}>
                       {item.label}
                     </Typography>
-                    <Typography variant="body1">{item.value}</Typography>
+                    <Typography variant="body1" sx={{ fontSize: { xs: 13, sm: 14 } }}>{item.value}</Typography>
                     {item.sub && (
                       <Typography variant="caption" color="text.secondary">
                         {item.sub}

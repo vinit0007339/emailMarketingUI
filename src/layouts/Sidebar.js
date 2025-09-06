@@ -139,11 +139,11 @@ export default function Sidebar({
           onClick={() => setCollapsed((v) => !v)}
           aria-label={collapsed ? "Expand menu" : "Collapse to mini menu"}
           sx={{
-            mx: 1,
-            mb: 1,
+            mx: { xs: 0.5, sm: 1 },
+            mb: { xs: 0.5, sm: 1 },
             borderRadius: 2,
             border: "1px solid #e9e9ee",
-            height: 40,
+            height: { xs: 32, sm: 40 },
             bgcolor: "#fff",
             boxShadow: "0 10px 40px rgba(0,0,0,.06)",
             "&:hover": {
@@ -173,8 +173,8 @@ export default function Sidebar({
                 }}
                 sx={{
                   borderRadius: 2,
-                  px: 2,
-                  py: 1.25,
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 0.75, sm: 1.25 },
                   color: "text.primary",
                   "&.Mui-selected": {
                     background:
@@ -189,9 +189,9 @@ export default function Sidebar({
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: collapsed ? "auto" : 1.5,
+                    mr: collapsed ? "auto" : { xs: 1, sm: 1.5 },
                     justifyContent: "center",
-                    fontSize: 18,
+                    fontSize: { xs: 16, sm: 18 },
                     userSelect: "none",
                   }}
                   aria-hidden="true"
@@ -211,6 +211,7 @@ export default function Sidebar({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontSize: { xs: 12.5, sm: 14 },
                     }}
                   />
                 )}
