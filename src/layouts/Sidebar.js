@@ -39,6 +39,12 @@ export default function Sidebar({
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    if (!isSmUp) {
+      setCollapsed(true);
+    }
+  }, [isSmUp]);
+
   // Default routes if none are provided
   const routeMap = useMemo(
     () =>
@@ -93,7 +99,7 @@ export default function Sidebar({
     headerHeight > 0 || footerHeight > 0
       ? {
           top: `${headerHeight}px`,
-          height: '100vh'//  `calc(100vh - ${footerHeight}px)`,
+          bottom: `${footerHeight}px`,
         }
       : {};
 
@@ -103,9 +109,8 @@ export default function Sidebar({
     <Box sx={{ display: "flex", height: "100%", bgcolor: "#fafafa" }}>
       {/* Sidebar Drawer */}
       <Drawer
-        variant={isSmUp ? "permanent" : "temporary"}
-        open={!collapsed}
-        onClose={() => setCollapsed(true)}
+        variant="permanent"
+        open
         sx={{
           width: collapsed ? drawerWidthCollapsed : drawerWidth,
           flexShrink: 0,
@@ -132,7 +137,7 @@ export default function Sidebar({
 
         <IconButton
           onClick={() => setCollapsed((v) => !v)}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Expand menu" : "Collapse to mini menu"}
           sx={{
             mx: 1,
             mb: 1,
