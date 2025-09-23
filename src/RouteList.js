@@ -32,6 +32,7 @@ import { componentsByKey } from "./screens";
 import { useSelector } from "react-redux";
 import LandingPage from "./screens/LandingPage";
 import Profile from "./screens/Profile";
+import ListDetails from "./screens/Audience/ListDetails";
 
 /**
  * RouteList
@@ -69,6 +70,8 @@ function RouteList() {
               />
             }
           >
+             <Route path="/list-details" element={<ListDetails />} />
+
             {/* Public routes (no auth required) */}
             {/* <Route index element={<Home />} /> */}
             <Route path="/" element={<LandingPage />} />
@@ -81,8 +84,7 @@ function RouteList() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/terms-conditions" element={<TermCondition />} />
-
-            {/* Protected app area: wrap dynamic routes in PrivateRoute */}
+                       {/* Protected app area: wrap dynamic routes in PrivateRoute */}
             <Route
               element={
                 <PrivateRoute>
