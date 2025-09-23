@@ -19,6 +19,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
+import { useNavigate } from "react-router-dom";
 
 // Sample Data Array
 const initialData = [
@@ -75,7 +76,7 @@ const initialData = [
 
 export default function ListsAndSegments() {
   const [data, setData] = useState(initialData);
-
+  const navigate = useNavigate()
   const toggleStar = (index) => {
     setData((prev) =>
       prev.map((item, i) =>
@@ -131,7 +132,7 @@ export default function ListsAndSegments() {
         </TableHead>
         <TableBody>
           {data.map((item, index) => (
-            <TableRow key={index}>
+            <TableRow key={index} onClick={() => navigate("/list-details")}>
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>

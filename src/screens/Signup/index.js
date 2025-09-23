@@ -38,7 +38,7 @@ const Signup = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email address").required("Required"),
-      username: Yup.string().required("Required"),
+      // username: Yup.string().required("Required"),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters")
         .required("Required"),
@@ -50,7 +50,7 @@ const Signup = () => {
       handleSignUp(values);
     },
   });
-
+  console.log("Formik values:", formik.values);
   const handleSignUp = async (values) => {
     try {
       dispatch(setLoading(true));
