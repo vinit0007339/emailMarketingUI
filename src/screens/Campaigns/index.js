@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import {
   Box,
@@ -26,6 +25,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EmailIcon from "@mui/icons-material/Email";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CreateCampaignDrawer from "./CreateCampaignDrawer";
 
 const mockRows = [
   {
@@ -61,17 +61,25 @@ const mockRows = [
     clickRate: "20%",
     activeOnSite: "Yes",
   },
-  
 ];
 
 const Campaigns = () => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerSubmit = (data) => {
+    // handle submit logic here
+    // e.g., send data to API or update state
+  };
 
   const rows = useMemo(() => {
     if (!query.trim()) return mockRows;
     const q = query.toLowerCase();
-    return mockRows.filter((r) => r.name.toLowerCase().includes(q) || r.subtitle.toLowerCase().includes(q));
+    return mockRows.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) || r.subtitle.toLowerCase().includes(q)
+    );
   }, [query]);
 
   const allChecked = selected.length === rows.length && rows.length > 0;
@@ -83,26 +91,57 @@ const Campaigns = () => {
   };
 
   const toggleRow = (id) => {
-    setSelected((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
   };
 
   return (
     <Box sx={{ bgcolor: "#fff", minHeight: "100vh" }}>
       {/* Header */}
       <Box sx={{ mx: "auto", px: { xs: 2, md: 3 }, py: 2.5 }}>
-        <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ xs: "flex-start", sm: "center" }} justifyContent="space-between" spacing={1.5}>
-          <Typography variant="h5" sx={{ fontWeight: 800 }}>Campaigns</Typography>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          justifyContent="space-between"
+          spacing={1.5}
+        >
+          <Typography variant="h5" sx={{ fontWeight: 800 }}>
+            Campaigns
+          </Typography>
           <Stack direction="row" spacing={1}>
             {/* <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />}>View library</Button>
             <Button variant="outlined" startIcon={<ListIcon />}>List</Button>
             <Button variant="outlined" startIcon={<CalendarMonthIcon />}>Calendar</Button> */}
-            <Button variant="contained" color="primary">Create campaign</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setDrawerOpen(true)}
+            >
+              Create campaign
+            </Button>
           </Stack>
         </Stack>
-
+        <CreateCampaignDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          onSubmit={handleDrawerSubmit}
+        />
         {/* Toolbar */}
-        <Paper elevation={0} sx={{ mt: 2, p: 2, borderRadius: 3, border: (t) => `1px solid ${t.palette.divider}` }}>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ xs: "stretch", md: "center" }}>
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 2,
+            p: 2,
+            borderRadius: 3,
+            border: (t) => `1px solid ${t.palette.divider}`,
+          }}
+        >
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={1.5}
+            alignItems={{ xs: "stretch", md: "center" }}
+          >
             <TextField
               size="small"
               placeholder="Search campaigns"
@@ -118,18 +157,32 @@ const Campaigns = () => {
               }}
             />
 
-            <Divider orientation="vertical" flexItem sx={{ display: { xs: "none", md: "block" } }} />
-
+            <Divider
+              orientation="vertical"
+              flexItem
+              sx={{ display: { xs: "none", md: "block" } }}
+            />
           </Stack>
         </Paper>
 
         {/* Table */}
-        <TableContainer component={Paper} sx={{ mt: 2, borderRadius: 3, border: (t) => `1px solid ${t.palette.divider}` }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            mt: 2,
+            borderRadius: 3,
+            border: (t) => `1px solid ${t.palette.divider}`,
+          }}
+        >
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
-                  <Checkbox indeterminate={someChecked} checked={allChecked} onChange={toggleAll} />
+                  <Checkbox
+                    indeterminate={someChecked}
+                    checked={allChecked}
+                    onChange={toggleAll}
+                  />
                 </TableCell>
                 <TableCell>Campaign</TableCell>
                 <TableCell>Type</TableCell>
@@ -145,12 +198,19 @@ const Campaigns = () => {
               {rows.map((r) => (
                 <TableRow key={r.id} hover selected={selected.includes(r.id)}>
                   <TableCell padding="checkbox">
-                    <Checkbox checked={selected.includes(r.id)} onChange={() => toggleRow(r.id)} />
+                    <Checkbox
+                      checked={selected.includes(r.id)}
+                      onChange={() => toggleRow(r.id)}
+                    />
                   </TableCell>
                   <TableCell>
                     <Stack spacing={0.25}>
-                      <Typography variant="body1" sx={{ fontWeight: 600 }}>{r.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">{r.subtitle}</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        {r.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {r.subtitle}
+                      </Typography>
                     </Stack>
                   </TableCell>
                   <TableCell>
@@ -159,7 +219,12 @@ const Campaigns = () => {
                     </Stack>
                   </TableCell>
                   <TableCell>
-                    <Chip size="small" label={r.status} color="default" variant="outlined" />
+                    <Chip
+                      size="small"
+                      label={r.status}
+                      color="default"
+                      variant="outlined"
+                    />
                   </TableCell>
                   <TableCell>{r.updated}</TableCell>
                   <TableCell>{r.openRate}</TableCell>

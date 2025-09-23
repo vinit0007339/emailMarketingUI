@@ -9,6 +9,7 @@ const routeMap = {
   audience: "/audience",
   content: "/content",
   analytics: "/analytics",
+  
 };
 
 export default routeMap;
