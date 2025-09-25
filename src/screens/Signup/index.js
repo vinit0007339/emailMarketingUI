@@ -50,7 +50,7 @@ const Signup = () => {
       handleSignUp(values);
     },
   });
-  console.log("Formik values:", formik.values);
+ 
   const handleSignUp = async (values) => {
     try {
       dispatch(setLoading(true));
