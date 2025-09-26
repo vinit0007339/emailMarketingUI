@@ -1,88 +1,105 @@
-import React, { useState } from "react";
+import dayjs from "dayjs";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
-  Grid,
-  Typography,
-  TextField,
   Button,
+  Checkbox,
+  Divider,
   IconButton,
-  Select,
+  ListItemText,
+  Menu,
   MenuItem,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Checkbox,
-  Stack,
+  TextField,
+  Typography,
+  ListItemIcon,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import StarIcon from "@mui/icons-material/Star";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// Sample Data Array
-const initialData = [
-  {
-    name: "Engaged (60 Days)",
-    type: "Segment",
-    members: 1,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: false,
-  },
-  {
-    name: "Engaged (90 Days)",
-    type: "Segment",
-    members: 1,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: false,
-  },
-  {
-    name: "Engaged (30 Days)",
-    type: "Segment",
-    members: 0,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: false,
-  },
-  {
-    name: "Preview List",
-    type: "List",
-    members: 1,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: true,
-  },
-  {
-    name: "New Subscribers",
-    type: "Segment",
-    members: 0,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: false,
-  },
-  {
-    name: "Email List",
-    type: "List",
-    members: 1,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: true,
-  },
-  {
-    name: "SMS List",
-    type: "List",
-    members: 0,
-    created: "Aug 30, 2025, 6:24 PM",
-    starred: true,
-  },
-];
-
+import { getAllData } from "../../../Utility/API";
+import DCButton from "../../../component/DCButton";
+import { endPoints } from "../../../constant/Environment";
+import CreateListModal from "./CreateListModal";
+import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
+import { useDispatch } from "react-redux";
+import EditListModal from "./EditListModal";
+import DeleteListModal from "./DeleteListModal";
 export default function ListsAndSegments() {
-  const [data, setData] = useState(initialData);
-  const navigate = useNavigate()
-  const toggleStar = (index) => {
-    setData((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, starred: !item.starred } : item
-      )
-    );
+  const [ListData, setListData] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [createAnchorEl, setCreateAnchorEl] = useState(null);
+  const createOpen = Boolean(createAnchorEl);
+  const [openCreateList, setOpenCreateList] = useState(false);
+  const [openEditList, setOpenEditList] = useState(false);
+  const [deleteList, setDeleteList] = useState(false);
+
+  const [actionAnchorEl, setActionAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const actionMenuOpen = Boolean(actionAnchorEl);
+
+  const handleActionClick = (event, row) => {
+    event.stopPropagation(); // prevent row navigation
+    setActionAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleActionClose = () => {
+    setActionAnchorEl(null);
+    // setSelectedRow(null);
+  };
+
+  const handleEditAction = () => {
+    setActionAnchorEl(null);
+    setOpenEditList(true);
+  };
+
+  const handleDeleteAction = () => {
+    setActionAnchorEl(null);
+    setDeleteList(true);
+  };
+
+  const handleCreateClick = (event) => {
+    setCreateAnchorEl(event.currentTarget);
+  };
+  const handleCreateClose = () => setCreateAnchorEl(null);
+  const goToCreateList = () => {
+    setCreateAnchorEl(null);
+    setOpenCreateList(true);
+  };
+  const goToCreateSegment = () => {
+    handleCreateClose();
+    // navigate("/create-segment");
+  };
+
+  const toggleStar = (index) => {};
+
+  useEffect(() => {
+    getAllList();
+  }, []);
+
+  const getAllList = async () => {
+    try {
+      dispatch(setLoading(true));
+      let response = await getAllData(endPoints.api.GET_ALL_LIST);
+      dispatch(setLoading(false));
+      setListData(response.data);
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while fetching campaigns", err);
+    }
   };
 
   return (
@@ -96,8 +113,78 @@ export default function ListsAndSegments() {
       >
         <Typography variant="h6">Lists & Segments</Typography>
         <Stack direction="row" spacing={2}>
-          <Button variant="outlined">Inactive Segments</Button>
-          <Button variant="contained">Create New</Button>
+          <DCButton variant="outlined">Inactive Segments</DCButton>
+          <DCButton
+            variant="contained"
+            onClick={handleCreateClick}
+            endIcon={
+              createOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+            }
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+              borderRadius: 1.5,
+              px: 2.5,
+            }}
+            aria-controls={createOpen ? "create-new-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={createOpen ? "true" : undefined}
+          >
+            Create New
+          </DCButton>
+          <Menu
+            id="create-new-menu"
+            anchorEl={createAnchorEl}
+            open={createOpen}
+            onClose={handleCreateClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                borderRadius: 2,
+                boxShadow:
+                  "0px 4px 24px rgba(0,0,0,0.15), 0px 2px 8px rgba(0,0,0,0.08)",
+                minWidth: 360,
+                p: 0.5,
+              },
+            }}
+            MenuListProps={{ sx: { p: 0 } }}
+          >
+            <MenuItem
+              onClick={goToCreateList}
+              sx={{
+                alignItems: "flex-start",
+                py: 1.5,
+                px: 2,
+                "&:hover": { bgcolor: "action.hover" },
+              }}
+            >
+              <ListItemText
+                primary="Create list"
+                secondary="Static list of profiles"
+                primaryTypographyProps={{ fontWeight: 700, fontSize: 18 }}
+                secondaryTypographyProps={{ color: "text.secondary", mt: 0.5 }}
+              />
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={goToCreateSegment}
+              sx={{
+                alignItems: "flex-start",
+                py: 1.5,
+                px: 2,
+                "&:hover": { bgcolor: "action.hover" },
+              }}
+            >
+              <ListItemText
+                primary="Create segment"
+                secondary="Dynamic group based on defined properties"
+                primaryTypographyProps={{ fontWeight: 700, fontSize: 18 }}
+                secondaryTypographyProps={{ color: "text.secondary", mt: 0.5 }}
+              />
+            </MenuItem>
+          </Menu>
         </Stack>
       </Stack>
 
@@ -116,7 +203,6 @@ export default function ListsAndSegments() {
         <Button size="small">Clear</Button>
       </Stack>
 
-      {/* Table */}
       <Table>
         <TableHead>
           <TableRow>
@@ -131,30 +217,34 @@ export default function ListsAndSegments() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
-            <TableRow key={index} onClick={() => navigate("/list-details")}>
+          {ListData.map((item, index) => (
+            <TableRow key={index}>
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell>
+              <TableCell onClick={() => navigate(`/list-details?id=${item._id}`)}>
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <IconButton
                     onClick={() => toggleStar(index)}
                     size="small"
-                    color={item.starred ? "warning" : "default"}
+                    color={item?.starred ? "warning" : "default"}
                   >
-                    {item.starred ? <StarIcon /> : <StarBorderIcon />}
+                    {item?.starred ? <StarIcon /> : <StarBorderIcon />}
                   </IconButton>
                   <Typography color="primary" sx={{ cursor: "pointer" }}>
                     {item.name}
                   </Typography>
                 </Stack>
               </TableCell>
-              <TableCell>{item.type}</TableCell>
-              <TableCell>{item.members}</TableCell>
-              <TableCell>{item.created}</TableCell>
+              <TableCell>{"List"}</TableCell>
+              <TableCell>{item?.members || 0}</TableCell>
+              <TableCell>
+                {item.created_at
+                  ? dayjs(item.created_at).format("MMM DD, YYYY, h:mm A")
+                  : ""}
+              </TableCell>
               <TableCell align="right">
-                <IconButton>
+                <IconButton onClick={(e) => handleActionClick(e, item)}>
                   <MoreVertIcon />
                 </IconButton>
               </TableCell>
@@ -162,6 +252,72 @@ export default function ListsAndSegments() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Row Actions Menu */}
+      <Menu
+        anchorEl={actionAnchorEl}
+        open={actionMenuOpen}
+        onClose={handleActionClose}
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow:
+              "0px 4px 24px rgba(0,0,0,0.15), 0px 2px 8px rgba(0,0,0,0.08)",
+            minWidth: 240,
+          },
+        }}
+      >
+        <MenuItem onClick={handleEditAction}>Edit List Name</MenuItem>
+        {/*  <MenuItem onClick={handleActionClose}>Import data</MenuItem>
+  <MenuItem onClick={handleActionClose}>List settings</MenuItem>
+  <MenuItem onClick={handleActionClose}>Merge list</MenuItem>
+  <MenuItem onClick={handleActionClose}>Linked integrations</MenuItem>
+  <MenuItem onClick={handleActionClose}>View campaigns</MenuItem>
+  <MenuItem onClick={handleActionClose}>View excluded people</MenuItem>
+  <MenuItem onClick={handleActionClose}>View sign-up forms</MenuItem> */}
+        <Divider />
+        <MenuItem
+          onClick={handleDeleteAction}
+          sx={{ color: "error.main", fontWeight: 600 }}
+        >
+          <ListItemIcon sx={{ color: "error.main" }}>
+            <DeleteIcon />
+          </ListItemIcon>
+          Delete List
+        </MenuItem>
+      </Menu>
+
+      <CreateListModal
+        openCreateList={openCreateList}
+        onClose={(flag) => {
+          setOpenCreateList(false);
+          if (flag) {
+            getAllList();
+          }
+        }}
+      />
+
+      <EditListModal
+        openEditList={openEditList}
+        selectedRow={selectedRow}
+        onClose={(flag) => {
+          setOpenEditList(false);
+          if (flag) {
+            getAllList();
+          }
+        }}
+      />
+
+      <DeleteListModal
+        deleteList={deleteList}
+        selectedRow={selectedRow}
+        onClose={(flag) => {
+          setDeleteList(false);
+          if (flag) {
+            getAllList();
+          }
+        }}
+      />
     </Box>
   );
 }

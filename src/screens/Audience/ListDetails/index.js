@@ -1,50 +1,124 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  IconButton,
-  Stack,
-} from "@mui/material";
-import { useParams } from "react-router-dom";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { Box, Button, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import DCButton from "../../../component/DCButton";
+import Member from "./Member";
+import CreateMember from "./Member/CreateMember";
+import { endPoints } from "../../../constant/Environment";
+import { getAllData } from "../../../Utility/API";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
 const membersData = [
-  {
-    profile: "nitin@crescenthomes.ca",
-    email: "nitin@crescenthomes.ca",
-    phone: "-",
-    location: "-",
-    dateAdded: "Aug 30, 2025, 6:24 PM",
-  },
+  // {
+  //   profile: "nitin@crescenthomes.ca",
+  //   email: "nitin@crescenthomes.ca",
+  //   phone: "-",
+  //   location: "-",
+  //   dateAdded: "Aug 30, 2025, 6:24 PM",
+  // },
 ];
 
 export default function ListDetails() {
-  const { name } = useParams();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get("id");
+  console.log("id", id);
+
+  const navigate = useNavigate();
   const [tab, setTab] = useState(0);
+  const [addMember, setAddMember] = useState(false);
+  const [listInfo, setListInfo] = useState("");
+
+  useEffect(() => {
+    if (id) {
+      getListById(id);
+    }
+  }, [id]);
+  const getListById = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      let response = await getAllData(`${endPoints.api.GET_ALL_LIST}/${id}`);
+      dispatch(setLoading(false));
+      if (response.status === "success") {
+        setListInfo(response.data);
+      }
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while fetching campaigns", err);
+    }
+  };
+
+  console.log("listInfo", listInfo);
 
   return (
-    <Box p={3}>
-      {/* Header */}
-      <Typography variant="h6">{name}</Typography>
-      <Typography
-        variant="caption"
-        sx={{ bgcolor: "grey.200", p: 0.5, borderRadius: 1, ml: 1 }}
+    <Box>
+      <Box
+        sx={{
+          mt: 4,
+          marginRight: 4,
+          marginLeft: 2,
+        }}
       >
-        List
-      </Typography>
+        <DCButton
+          variant="text"
+          color="primary"
+          onClick={() => navigate("/audience")}
+          sx={{ textTransform: "none", mb: 1 }}
+          startIcon={<ArrowBackIosNewIcon fontSize="small" />}
+        >
+          List & segments
+        </DCButton>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Box display="flex" alignItems="center">
+            <Typography variant="h5" fontWeight={700}>
+              {listInfo?.name}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                bgcolor: "grey.200",
+                px: 1,
+                py: 0.25,
+                borderRadius: 2,
+                ml: 1,
+              }}
+            >
+              List
+            </Typography>
+          </Box>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              // endIcon={<KeyboardArrowDownIcon />}
+              sx={{ textTransform: "none", fontWeight: 600 }}
+              onClick={() => {
+                setAddMember(true);
+              }}
+            >
+              Quick Add
+            </Button>
+            {/* <Button
+            variant="outlined"
+            endIcon={<KeyboardArrowDownIcon />}
+            sx={{ textTransform: "none", fontWeight: 600 }}
+          >
+            Manage List
+          </Button> */}
+          </Stack>
+        </Stack>
+      </Box>
 
       {/* Tabs */}
       <Tabs
         value={tab}
         onChange={(e, v) => setTab(v)}
-        sx={{ borderBottom: 1, borderColor: "divider", mt: 2 }}
+        sx={{ borderBottom: 1, borderColor: "divider" }}
       >
         <Tab label={`Members (${membersData.length})`} />
         <Tab label="Sign-up forms" />
@@ -55,41 +129,14 @@ export default function ListDetails() {
         <Tab label="Settings" />
       </Tabs>
 
-      {/* Tab Content */}
-      {tab === 0 && (
-        <Box mt={2}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Profile</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Phone number</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Date added</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {membersData.map((m, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    <Typography color="primary" sx={{ cursor: "pointer" }}>
-                      {m.profile}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{m.email}</TableCell>
-                  <TableCell>{m.phone}</TableCell>
-                  <TableCell>{m.location}</TableCell>
-                  <TableCell>{m.dateAdded}</TableCell>
-                  <TableCell align="right">
-                    <IconButton><MoreVertIcon /></IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      )}
+      {tab === 0 && <Member membersData={membersData} />}
+
+      <CreateMember
+        addMember={addMember}
+        onClose={() => {
+          setAddMember(false);
+        }}
+      />
     </Box>
   );
 }

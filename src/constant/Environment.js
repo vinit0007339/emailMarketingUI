@@ -11,6 +11,15 @@ export const endPoints = {
     //Email Marketing
     GET_ALL_CAMPAIGNS: "campaign",
     CREATE_CAMPAIGN: "campaign",
+
+    //List Api
+    GET_ALL_LIST: "lists",
+    CREATE_LIST: "lists",
+    UPDATE_LIST: "lists",
+    DELETE_LIST: "lists",
+
+    // create MEMBER
+    CREATE_MEMBER: "contacts",
   },
   mode: "Development",
 };
