@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Stack,
@@ -26,64 +26,63 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EmailIcon from "@mui/icons-material/Email";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CreateCampaignDrawer from "./CreateCampaignDrawer";
-
-const mockRows = [
-  {
-    id: 1,
-    name: "Email Campaign",
-    subtitle: "Email List",
-    typeIcon: <EmailIcon fontSize="small" />,
-    status: "Draft",
-    updated: "Today at 2:43 AM",
-    openRate: "-",
-    clickRate: "-",
-    activeOnSite: "-",
-  },
-  {
-    id: 2,
-    name: "Spring Sale",
-    subtitle: "Newsletter Subscribers",
-    typeIcon: <EmailIcon fontSize="small" />,
-    status: "Scheduled",
-    updated: "Yesterday at 5:12 PM",
-    openRate: "45%",
-    clickRate: "12%",
-    activeOnSite: "No",
-  },
-  {
-    id: 3,
-    name: "Product Launch",
-    subtitle: "All Customers",
-    typeIcon: <EmailIcon fontSize="small" />,
-    status: "Sent",
-    updated: "Mar 10, 2024 at 11:00 AM",
-    openRate: "60%",
-    clickRate: "20%",
-    activeOnSite: "Yes",
-  },
-];
+import { getAllData } from "../../Utility/API";
+import { endPoints } from "../../constant/Environment";
 
 const Campaigns = () => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [campaigns, setCampaigns] = useState([]); // New state for campaigns
 
   const handleDrawerSubmit = (data) => {
     // handle submit logic here
     // e.g., send data to API or update state
   };
 
+  // Format API data for table
+  const formatCampaigns = (data) =>
+    data.map((item) => ({
+      id: item._id,
+      name: item.name,
+      subtitle: item.subject || "No Subject",
+      typeIcon: <EmailIcon fontSize="small" />,
+      status:
+        item.status === 1 ? "Draft" : item.status === 2 ? "Scheduled" : "Sent",
+      updated: item.created_at
+        ? new Date(item.created_at).toLocaleString()
+        : "-",
+      openRate: "-", // Replace with actual data if available
+      clickRate: "-", // Replace with actual data if available
+      activeOnSite: "-", // Replace with actual data if available
+    }));
+
   const rows = useMemo(() => {
-    if (!query.trim()) return mockRows;
+    if (!query.trim()) return campaigns;
     const q = query.toLowerCase();
-    return mockRows.filter(
+    return campaigns.filter(
       (r) =>
         r.name.toLowerCase().includes(q) || r.subtitle.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, campaigns]);
 
   const allChecked = selected.length === rows.length && rows.length > 0;
   const someChecked = selected.length > 0 && selected.length < rows.length;
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, []);
+
+  const getAllCampaigns = async () => {
+    try {
+      let response = await getAllData(endPoints.api.GET_ALL_CAMPAIGNS);
+      // Assuming response.data is an array of campaigns
+      setCampaigns(formatCampaigns(response.data));
+      console.log("All campaigns", response);
+    } catch (err) {
+      console.log("Error while fetching campaigns", err);
+    }
+  };
 
   const toggleAll = (e) => {
     if (e.target.checked) setSelected(rows.map((r) => r.id));

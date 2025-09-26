@@ -14,6 +14,10 @@ import {
 import EmailIcon from "@mui/icons-material/Email";
 import MessageIcon from "@mui/icons-material/Message";
 import CampaignIcon from "@mui/icons-material/Campaign"; // Example for 3rd option
+import { addData } from "../../Utility/API"; // Adjust the path if needed
+import dayjs from "dayjs";
+import { endPoints } from "../../constant/Environment";
+import { useSnackbarContext } from "../../component/SnackbarContext";
 
 const campaignTags = [
   "Newsletter",
@@ -28,15 +32,33 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
   const [draftDate, setDraftDate] = useState("");
   const [tags, setTags] = useState([]);
   const [campaignType, setCampaignType] = useState("email");
-
-  const handleSubmit = (e) => {
+  const { showSuccessSnackbar, showErrorSnackbar } = useSnackbarContext();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ name, draftDate, tags, campaignType });
-    setName("");
-    setDraftDate("");
-    setTags([]);
-    setCampaignType("email");
-    onClose();
+    const payload = {
+      name,
+      channel: 1,
+      type: 1,
+      date: draftDate ? new Date(draftDate).toISOString() : null,
+    };
+    try {
+      let response = await addData(endPoints.api.CREATE_CAMPAIGN, payload);
+        console.log("Campaign:", response);
+      if (response.data.status == "success") {
+        onSubmit({ name, draftDate, tags });
+        setName("");
+        setDraftDate(null);
+        setTags([]);
+        onClose();
+        showSuccessSnackbar("Campaign created successfully!");
+      }else{
+        showErrorSnackbar("Failed to create campaign. Please try again.");
+      }
+    
+    } catch (error) {
+      // handle error if needed
+      console.error(error);
+    }
   };
 
   return (
