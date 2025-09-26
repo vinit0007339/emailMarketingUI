@@ -21,11 +21,14 @@ import { useDispatch } from "react-redux";
 import { addData } from "../../../../Utility/API";
 import { endPoints } from "../../../../constant/Environment";
 import { useSnackbarContext } from "../../../../component/SnackbarContext";
+import { useLocation } from "react-router-dom";
 
 export default function CreateMember({ addMember, onClose }) {
   const [loading, setLoading] = useState(false);
   const { showSuccessSnackbar, showErrorSnackbar } = useSnackbarContext();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const list_id = new URLSearchParams(location.search).get("id");
   const validationSchema = Yup.object({
     email: Yup.string()
       .trim()
@@ -68,18 +71,22 @@ export default function CreateMember({ addMember, onClose }) {
       setLoading(true);
       let data = {
         email: values.email,
-        first_name: values.email,
-        last_name: values.email,
+        first_name: values.firstName,
+        last_name: values.lastName,
         phone: values.phone,
-        title: values.title,
-        organization: values.organization,
+        // title: values.title,
+        // organization: values.organization,
       };
 
-      let response = await addData(`${endPoints.api.CREATE_MEMBER}`, data);
+      let response = await addData(
+        endPoints.api.LIST_IN_CONTACT(list_id),
+        data
+      );
       setLoading(false);
       if (response.data.status == "success") {
         showSuccessSnackbar("Contact Added Successfully");
-        onClose();
+         formik.resetForm()
+        onClose(true);
       } else {
         showErrorSnackbar(response.data.message);
       }

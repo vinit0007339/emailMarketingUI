@@ -9,29 +9,21 @@ import { endPoints } from "../../../constant/Environment";
 import { getAllData } from "../../../Utility/API";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
-const membersData = [
-  // {
-  //   profile: "nitin@crescenthomes.ca",
-  //   email: "nitin@crescenthomes.ca",
-  //   phone: "-",
-  //   location: "-",
-  //   dateAdded: "Aug 30, 2025, 6:24 PM",
-  // },
-];
 
 export default function ListDetails() {
   const dispatch = useDispatch();
   const location = useLocation();
   const id = new URLSearchParams(location.search).get("id");
-  console.log("id", id);
 
   const navigate = useNavigate();
   const [tab, setTab] = useState(0);
   const [addMember, setAddMember] = useState(false);
   const [listInfo, setListInfo] = useState("");
+  const [membersData, setMemberData] = useState([]);
 
   useEffect(() => {
     if (id) {
+      getMemberInfoById(id);
       getListById(id);
     }
   }, [id]);
@@ -49,7 +41,20 @@ export default function ListDetails() {
     }
   };
 
-  console.log("listInfo", listInfo);
+  const getMemberInfoById = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
+      dispatch(setLoading(false));
+      if (response.status === "success") {
+        setMemberData(response.data);
+      }
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while fetching campaigns", err);
+    }
+  };
+  // console.log("listImembersDatanfo ---", membersData);
 
   return (
     <Box>
@@ -129,12 +134,22 @@ export default function ListDetails() {
         <Tab label="Settings" />
       </Tabs>
 
-      {tab === 0 && <Member membersData={membersData} />}
+      {tab === 0 && (
+        <Member
+          membersData={membersData}
+          updateList={() => {
+            getMemberInfoById(id);
+          }}
+        />
+      )}
 
       <CreateMember
         addMember={addMember}
-        onClose={() => {
+        onClose={(flag) => {
           setAddMember(false);
+          if (flag) {
+            getMemberInfoById(id);
+          }
         }}
       />
     </Box>

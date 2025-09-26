@@ -95,13 +95,19 @@ export default function ListsAndSegments() {
       dispatch(setLoading(true));
       let response = await getAllData(endPoints.api.GET_ALL_LIST);
       dispatch(setLoading(false));
-      setListData(response.data);
+
+      if (response.status == "success") {
+        //  console.log("(response.data", response.lists);
+        setListData(response.lists);
+      } else {
+      }
     } catch (err) {
       dispatch(setLoading(false));
       console.log("Error while fetching campaigns", err);
     }
   };
 
+  // console.log("ListData", ListData);
   return (
     <Box p={3}>
       {/* Header */}

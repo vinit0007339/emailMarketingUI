@@ -13,8 +13,9 @@ import { useNavigate } from "react-router-dom";
 import MemberEmptyScreen from "../MemberEmptyScreen";
 import React, { useState } from "react";
 import CreateMember from "./CreateMember";
+import dayjs from "dayjs";
 
-const Member = ({ membersData }) => {
+const Member = ({ membersData, updateList }) => {
   const navigate = useNavigate();
   const [addMember, setAddMember] = useState(false);
 
@@ -28,7 +29,7 @@ const Member = ({ membersData }) => {
                 <TableCell>Profile</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone number</TableCell>
-                <TableCell>Location</TableCell>
+                {/* <TableCell>Location</TableCell> */}
                 <TableCell>Date added</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
@@ -38,13 +39,17 @@ const Member = ({ membersData }) => {
                 <TableRow key={i}>
                   <TableCell>
                     <Typography color="primary" sx={{ cursor: "pointer" }}>
-                      {m.profile}
+                      {m.contact.first_name} {m.contact.last_name}
                     </Typography>
                   </TableCell>
-                  <TableCell>{m.email}</TableCell>
-                  <TableCell>{m.phone}</TableCell>
-                  <TableCell>{m.location}</TableCell>
-                  <TableCell>{m.dateAdded}</TableCell>
+                  <TableCell>{m.contact.email}</TableCell>
+                  <TableCell>{m?.phone}</TableCell>
+                  {/* <TableCell>{m?.location}</TableCell> */}
+                  <TableCell>
+                    {m.created_at
+                      ? dayjs(m.created_at).format("MMM DD, YYYY, h:mm A")
+                      : ""}
+                  </TableCell>
                   <TableCell align="right">
                     <IconButton>
                       <MoreVertIcon />
@@ -65,8 +70,11 @@ const Member = ({ membersData }) => {
       )}
       <CreateMember
         addMember={addMember}
-        onClose={() => {
+        onClose={(flag) => {
           setAddMember(false);
+          if (flag) {
+            updateList();
+          }
         }}
       />
     </Box>

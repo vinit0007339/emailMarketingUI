@@ -13,10 +13,12 @@ export const endPoints = {
     CREATE_CAMPAIGN: "campaign",
 
     //List Api
-    GET_ALL_LIST: "lists",
+    GET_ALL_LIST: "lists/all",  //lists
     CREATE_LIST: "lists",
     UPDATE_LIST: "lists",
     DELETE_LIST: "lists",
+    LIST_IN_CONTACT: (id) => `lists/${id}/contacts`,
+
 
     // create MEMBER
     CREATE_MEMBER: "contacts",
