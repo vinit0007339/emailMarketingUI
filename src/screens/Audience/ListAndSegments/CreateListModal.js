@@ -48,6 +48,7 @@ export default function CreateListModal({ openCreateList, onClose }) {
       if (response.data.status == "success") {
         showSuccessSnackbar("List created successfully!");
         handleCloseCreateList(true);
+         navigate(`/list-details?id=${response.data.data._id}`)
       } else {
         showErrorSnackbar("Failed to create List.");
       }

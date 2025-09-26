@@ -163,8 +163,12 @@ export default function ListsAndSegments() {
               <ListItemText
                 primary="Create list"
                 secondary="Static list of profiles"
-                primaryTypographyProps={{ fontWeight: 700, fontSize: 18 }}
-                secondaryTypographyProps={{ color: "text.secondary", mt: 0.5 }}
+                primaryTypographyProps={{ fontWeight: 700, fontSize: 16 }}
+                secondaryTypographyProps={{
+                  color: "text.secondary",
+                  mt: 0.5,
+                  fontSize: 12,
+                }}
               />
             </MenuItem>
             <Divider />
@@ -180,8 +184,12 @@ export default function ListsAndSegments() {
               <ListItemText
                 primary="Create segment"
                 secondary="Dynamic group based on defined properties"
-                primaryTypographyProps={{ fontWeight: 700, fontSize: 18 }}
-                secondaryTypographyProps={{ color: "text.secondary", mt: 0.5 }}
+                primaryTypographyProps={{ fontWeight: 700, fontSize: 16 }}
+                secondaryTypographyProps={{
+                  color: "text.secondary",
+                  mt: 0.5,
+                  fontSize: 12,
+                }}
               />
             </MenuItem>
           </Menu>
@@ -222,7 +230,9 @@ export default function ListsAndSegments() {
               <TableCell padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell onClick={() => navigate(`/list-details?id=${item._id}`)}>
+              <TableCell
+                onClick={() => navigate(`/list-details?id=${item._id}`)}
+              >
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <IconButton
                     onClick={() => toggleStar(index)}
