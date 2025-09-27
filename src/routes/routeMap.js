@@ -10,6 +10,7 @@ const routeMap = {
   content: "/content",
   analytics: "/analytics",
   recipient: "/recipient",
+  message: "/message",
   
 };
 

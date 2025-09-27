@@ -89,10 +89,14 @@ const RecipientScreen = ({onBack}) => {
       smartSending,
       trackingEnabled,
     };
-    // For now, just navigate back to campaigns
-    // In a real app, you might want to save this data and navigate to the next step
+    // Navigate to message screen with campaign and recipient data
     console.log("Recipient data:", { ...campaignData, ...recipientData });
-    navigate("/campaigns");
+    navigate("/message", { 
+      state: { 
+        campaignData,
+        recipientData 
+      } 
+    });
   };
 
   return (

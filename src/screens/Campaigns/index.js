@@ -55,6 +55,18 @@ const Campaigns = () => {
       activeOnSite: "-", // Replace with actual data if available
     }));
 
+  // Create navigation-safe campaign data (without JSX elements)
+  const createNavigationData = (campaign) => ({
+    id: campaign.id,
+    name: campaign.name,
+    subtitle: campaign.subtitle,
+    status: campaign.status,
+    updated: campaign.updated,
+    openRate: campaign.openRate,
+    clickRate: campaign.clickRate,
+    activeOnSite: campaign.activeOnSite,
+  });
+
   const rows = useMemo(() => {
     if (!query.trim()) return campaigns;
     const q = query.toLowerCase();
@@ -193,8 +205,14 @@ const Campaigns = () => {
             </TableHead>
             <TableBody>
               {rows.map((r) => (
-                <TableRow key={r.id} hover selected={selected.includes(r.id)}>
-                  <TableCell padding="checkbox">
+                <TableRow 
+                  key={r.id} 
+                  hover 
+                  selected={selected.includes(r.id)}
+                  onClick={() => navigate("/recipient", { state: { campaignData: createNavigationData(r) } })}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={selected.includes(r.id)}
                       onChange={() => toggleRow(r.id)}
@@ -227,7 +245,7 @@ const Campaigns = () => {
                   <TableCell>{r.openRate}</TableCell>
                   <TableCell>{r.clickRate}</TableCell>
                   <TableCell>{r.activeOnSite}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                     <IconButton>
                       <MoreVertIcon />
                     </IconButton>
