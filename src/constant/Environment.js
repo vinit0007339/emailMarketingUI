@@ -14,6 +14,7 @@ export const endPoints = {
 
     //List Api
     GET_ALL_LIST: "lists/all",  //lists
+    GET_LIST_BY_ID:"lists",
     CREATE_LIST: "lists",
     UPDATE_LIST: "lists",
     DELETE_LIST: "lists",

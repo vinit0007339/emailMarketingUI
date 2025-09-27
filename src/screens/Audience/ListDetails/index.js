@@ -30,7 +30,7 @@ export default function ListDetails() {
   const getListById = async (id) => {
     try {
       dispatch(setLoading(true));
-      let response = await getAllData(`${endPoints.api.GET_ALL_LIST}/${id}`);
+      let response = await getAllData(`${endPoints.api.GET_LIST_BY_ID}/${id}`);
       dispatch(setLoading(false));
       if (response.status === "success") {
         setListInfo(response.data);
@@ -45,7 +45,7 @@ export default function ListDetails() {
     try {
       dispatch(setLoading(true));
       let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
       if (response.status === "success") {
         setMemberData(response.data);
       }
