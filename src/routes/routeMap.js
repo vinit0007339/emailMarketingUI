@@ -9,6 +9,7 @@ const routeMap = {
   audience: "/audience",
   content: "/content",
   analytics: "/analytics",
+  recipient: "/recipient",
   
 };
 

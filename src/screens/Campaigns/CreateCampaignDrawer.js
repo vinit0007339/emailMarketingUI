@@ -43,7 +43,7 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
     };
     try {
       let response = await addData(endPoints.api.CREATE_CAMPAIGN, payload);
-        console.log("Campaign:", response);
+      console.log("Campaign:", response);
       if (response.data.status == "success") {
         onSubmit({ name, draftDate, tags });
         setName("");
@@ -51,10 +51,9 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
         setTags([]);
         onClose();
         showSuccessSnackbar("Campaign created successfully!");
-      }else{
+      } else {
         showErrorSnackbar("Failed to create campaign. Please try again.");
       }
-    
     } catch (error) {
       // handle error if needed
       console.error(error);
