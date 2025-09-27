@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -8,8 +8,6 @@ import {
   Switch,
   FormControlLabel,
   Link,
-  Chip,
-  Autocomplete,
   InputAdornment,
   Alert,
   IconButton,
@@ -23,6 +21,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   Search as SearchIcon,
   Star as StarIcon,
@@ -31,35 +30,46 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-
-const mockLists = [
-  { id: 1, name: "Email List", count: 1, type: "email", starred: true },
-  { id: 2, name: "Preview List", count: 1, type: "preview", starred: true },
-  { id: 3, name: "SMS List", count: 0, type: "sms", starred: true },
-  { id: 4, name: "Testing List", count: 0, type: "testing", starred: false },
-];
-
-const mockSegments = [
-  { id: 5, name: "High Value Customers", count: 150, type: "segment" },
-  { id: 6, name: "New Subscribers", count: 75, type: "segment" },
-  { id: 7, name: "Inactive Users", count: 200, type: "segment" },
-];
+import { getAllData } from "../../Utility/API";
+import { endPoints } from "../../constant/Environment";
+import { setLoading } from "../../redux/Reducers/GlobalReducer/globalSlice";
 
 const RecipientScreen = ({onBack}) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const campaignData = location.state?.campaignData || {};
   
   const [selectedAudience, setSelectedAudience] = useState(null);
-  const [excludeAudience, setExcludeAudience] = useState(null);
   const [smartSending, setSmartSending] = useState(true);
   const [trackingEnabled, setTrackingEnabled] = useState(false);
   const [showAudienceDropdown, setShowAudienceDropdown] = useState(false);
   const [showExcludeDropdown, setShowExcludeDropdown] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [showNotification, setShowNotification] = useState(true);
+  const [listData, setListData] = useState([]);
+  const [segmentsData, setSegmentsData] = useState([]);
 
-  const allAudienceOptions = [...mockLists, ...mockSegments];
+  // Format API data for dropdown options
+  const formatListData = (data) => 
+    data.map((item) => ({
+      id: item._id,
+      name: item.name,
+      count: item.members || 0,
+      type: "list",
+      starred: item.starred || false,
+    }));
+
+  const formatSegmentData = (data) => 
+    data.map((item) => ({
+      id: item._id,
+      name: item.name,
+      count: item.members || 0,
+      type: "segment",
+      starred: item.starred || false,
+    }));
+
+  const allAudienceOptions = [...formatListData(listData), ...formatSegmentData(segmentsData)];
 
   const filteredOptions = allAudienceOptions.filter((option) =>
     option.name.toLowerCase().includes(filterText.toLowerCase())
@@ -67,16 +77,40 @@ const RecipientScreen = ({onBack}) => {
 
   const estimatedRecipients = selectedAudience ? selectedAudience.count : 0;
 
+  // API calls
+  const getAllLists = useCallback(async () => {
+    try {
+      dispatch(setLoading(true));
+      let response = await getAllData(endPoints.api.GET_ALL_LIST);
+      dispatch(setLoading(false));
+      setListData(response.data);
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while fetching lists", err);
+    }
+  }, [dispatch]);
+
+  const getAllSegments = useCallback(async () => {
+    try {
+      // Note: Replace with actual segments endpoint when available
+      // For now, using empty array as segments endpoint might not exist
+      setSegmentsData([]);
+    } catch (err) {
+      console.log("Error while fetching segments", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllLists();
+    getAllSegments();
+  }, [getAllLists, getAllSegments]);
+
   const handleAudienceSelect = (option) => {
     setSelectedAudience(option);
     setShowAudienceDropdown(false);
     setFilterText("");
   };
 
-  const handleExcludeSelect = (option) => {
-    setExcludeAudience(option);
-    setShowExcludeDropdown(false);
-  };
 
   const handleBack = () => {
     navigate("/campaigns");
@@ -85,7 +119,6 @@ const RecipientScreen = ({onBack}) => {
   const handleNext = () => {
     const recipientData = {
       selectedAudience,
-      excludeAudience,
       smartSending,
       trackingEnabled,
     };
@@ -214,7 +247,7 @@ const RecipientScreen = ({onBack}) => {
                         </Typography>
                         <List dense>
                           {filteredOptions
-                            .filter((option) => option.type !== "segment")
+                            .filter((option) => option.type === "list")
                             .map((option) => (
                               <ListItem key={option.id} disablePadding>
                                 <ListItemButton
