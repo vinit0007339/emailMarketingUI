@@ -110,6 +110,7 @@ export default function ListsAndSegments() {
         showSuccessSnackbar(
           nextFavorite ? "Added to favorites" : "Removed from favorites"
         );
+        getAllList();
       } else {
         // Revert optimistic update on failure
         setListData((prev) =>
