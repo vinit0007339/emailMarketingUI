@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllData } from "../../../Utility/API";
+import { getAllData, updateAddData } from "../../../Utility/API";
 import DCButton from "../../../component/DCButton";
 import { endPoints } from "../../../constant/Environment";
 import CreateListModal from "./CreateListModal";
@@ -35,11 +35,12 @@ import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
 import { useDispatch } from "react-redux";
 import EditListModal from "./EditListModal";
 import DeleteListModal from "./DeleteListModal";
+import { useSnackbarContext } from "../../../component/SnackbarContext";
 export default function ListsAndSegments() {
   const [ListData, setListData] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { showSuccessSnackbar, showErrorSnackbar } = useSnackbarContext();
   const [createAnchorEl, setCreateAnchorEl] = useState(null);
   const createOpen = Boolean(createAnchorEl);
   const [openCreateList, setOpenCreateList] = useState(false);
@@ -84,7 +85,52 @@ export default function ListsAndSegments() {
     // navigate("/create-segment");
   };
 
-  const toggleStar = (index) => {};
+  const toggleStar = async (e, item) => {
+    e.stopPropagation(); // prevent TableCell navigation
+
+    const nextFavorite = !Boolean(item?.is_favorite);
+    const payload = { is_favorite: nextFavorite };
+
+    // Optimistic UI update
+    setListData((prev) =>
+      prev.map((it) =>
+        it._id === item._id ? { ...it, is_favorite: nextFavorite } : it
+      )
+    );
+
+    try {
+      dispatch(setLoading(true));
+      const response = await updateAddData(
+        endPoints.api.LIST_IN_FAVORITE(item._id),
+        payload
+      );
+      dispatch(setLoading(false));
+
+      if (response?.data?.status === "success") {
+        showSuccessSnackbar(
+          nextFavorite ? "Added to favorites" : "Removed from favorites"
+        );
+      } else {
+        // Revert optimistic update on failure
+        setListData((prev) =>
+          prev.map((it) =>
+            it._id === item._id ? { ...it, is_favorite: !nextFavorite } : it
+          )
+        );
+        showErrorSnackbar("Failed to update favorite. Please try again.");
+      }
+    } catch (error) {
+      dispatch(setLoading(false));
+      // Revert optimistic update on error
+      setListData((prev) =>
+        prev.map((it) =>
+          it._id === item._id ? { ...it, is_favorite: !nextFavorite } : it
+        )
+      );
+      console.error(error);
+      showErrorSnackbar("Something went wrong while updating favorite.");
+    }
+  };
 
   useEffect(() => {
     getAllList();
@@ -241,11 +287,11 @@ export default function ListsAndSegments() {
               >
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <IconButton
-                    onClick={() => toggleStar(index)}
+                    onClick={(e) => toggleStar(e, item)}
                     size="small"
-                    color={item?.starred ? "warning" : "default"}
+                    color={item?.is_favorite ? "warning" : "default"}
                   >
-                    {item?.starred ? <StarIcon /> : <StarBorderIcon />}
+                    {item?.is_favorite ? <StarIcon /> : <StarBorderIcon />}
                   </IconButton>
                   <Typography color="primary" sx={{ cursor: "pointer" }}>
                     {item.name}

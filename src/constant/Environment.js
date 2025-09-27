@@ -18,7 +18,7 @@ export const endPoints = {
     UPDATE_LIST: "lists",
     DELETE_LIST: "lists",
     LIST_IN_CONTACT: (id) => `lists/${id}/contacts`,
-
+    LIST_IN_FAVORITE: (id) => `lists/${id}/favorite`,
 
     // create MEMBER
     CREATE_MEMBER: "contacts",
