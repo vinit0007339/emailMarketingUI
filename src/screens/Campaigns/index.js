@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Box,
   Stack,
@@ -18,13 +18,10 @@ import {
   TableRow,
   Checkbox,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
-import ListIcon from "@mui/icons-material/List";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EmailIcon from "@mui/icons-material/Email";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CreateCampaignDrawer from "./CreateCampaignDrawer";
 import { getAllData } from "../../Utility/API";
 import { endPoints } from "../../constant/Environment";
@@ -34,10 +31,11 @@ const Campaigns = () => {
   const [selected, setSelected] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [campaigns, setCampaigns] = useState([]); // New state for campaigns
+  const navigate = useNavigate();
 
   const handleDrawerSubmit = (data) => {
-    // handle submit logic here
-    // e.g., send data to API or update state
+    // Navigate to recipient screen with campaign data
+    navigate("/recipient", { state: { campaignData: data } });
   };
 
   // Format API data for table
@@ -57,6 +55,18 @@ const Campaigns = () => {
       activeOnSite: "-", // Replace with actual data if available
     }));
 
+  // Create navigation-safe campaign data (without JSX elements)
+  const createNavigationData = (campaign) => ({
+    id: campaign.id,
+    name: campaign.name,
+    subtitle: campaign.subtitle,
+    status: campaign.status,
+    updated: campaign.updated,
+    openRate: campaign.openRate,
+    clickRate: campaign.clickRate,
+    activeOnSite: campaign.activeOnSite,
+  });
+
   const rows = useMemo(() => {
     if (!query.trim()) return campaigns;
     const q = query.toLowerCase();
@@ -66,14 +76,7 @@ const Campaigns = () => {
     );
   }, [query, campaigns]);
 
-  const allChecked = selected.length === rows.length && rows.length > 0;
-  const someChecked = selected.length > 0 && selected.length < rows.length;
-
-  useEffect(() => {
-    getAllCampaigns();
-  }, []);
-
-  const getAllCampaigns = async () => {
+  const getAllCampaigns = useCallback(async () => {
     try {
       let response = await getAllData(endPoints.api.GET_ALL_CAMPAIGNS);
       // Assuming response.data is an array of campaigns
@@ -82,7 +85,14 @@ const Campaigns = () => {
     } catch (err) {
       console.log("Error while fetching campaigns", err);
     }
-  };
+  }, []);
+
+  const allChecked = selected.length === rows.length && rows.length > 0;
+  const someChecked = selected.length > 0 && selected.length < rows.length;
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, [getAllCampaigns]);
 
   const toggleAll = (e) => {
     if (e.target.checked) setSelected(rows.map((r) => r.id));
@@ -195,8 +205,14 @@ const Campaigns = () => {
             </TableHead>
             <TableBody>
               {rows.map((r) => (
-                <TableRow key={r.id} hover selected={selected.includes(r.id)}>
-                  <TableCell padding="checkbox">
+                <TableRow 
+                  key={r.id} 
+                  hover 
+                  selected={selected.includes(r.id)}
+                  onClick={() => navigate("/recipient", { state: { campaignData: createNavigationData(r) } })}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={selected.includes(r.id)}
                       onChange={() => toggleRow(r.id)}
@@ -229,7 +245,7 @@ const Campaigns = () => {
                   <TableCell>{r.openRate}</TableCell>
                   <TableCell>{r.clickRate}</TableCell>
                   <TableCell>{r.activeOnSite}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                     <IconButton>
                       <MoreVertIcon />
                     </IconButton>
