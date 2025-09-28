@@ -83,7 +83,8 @@ const RecipientScreen = ({onBack}) => {
       dispatch(setLoading(true));
       let response = await getAllData(endPoints.api.GET_ALL_LIST);
       dispatch(setLoading(false));
-      setListData(response.data);
+      setListData(response.lists);
+      // need to review currenlty direct bind the list only
     } catch (err) {
       dispatch(setLoading(false));
       console.log("Error while fetching lists", err);

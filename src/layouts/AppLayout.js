@@ -1,6 +1,6 @@
 // src/layouts/AppLayout.jsx
 import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import { Suspense, useEffect } from "react";
 import Sidebar from "./Sidebar";
@@ -11,6 +11,7 @@ const HEADER_H = 82; // match your AppBar
 const FOOTER_H = 56; // match your Footer
 
 export default function AppLayout({ isLoggedIn, routeMap }) {
+  const { pathname } = useLocation();
   useEffect(() => {
     if (!isLoggedIn) {
       // Ensure public pages do not reserve sidebar space
@@ -21,14 +22,15 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Your <AppBar /> goes here */}
-      <Header/>
+      <Header />
       <Box sx={{ flex: 1, display: "flex", position: "relative" }}>
-        <Sidebar
-          isLoggedIn={isLoggedIn}
-          headerHeight={HEADER_H}
-        //   footerHeight={FOOTER_H}
-          routeMap={routeMap}
-        />
+        {pathname === "/message" ? null : (
+          <Sidebar
+            isLoggedIn={isLoggedIn}
+            headerHeight={HEADER_H}
+            routeMap={routeMap}
+          />
+        )}
         <Box
           component="main"
           sx={{

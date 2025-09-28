@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import TemplatesSection from "./TemplatesSection";
 import EmailMessageSection from "./EmailMessageSection";
+import TemplateBuilder from "./TemplateBuilder";
 
 const MessageScreen = () => {
   const location = useLocation();
@@ -84,7 +85,8 @@ const MessageScreen = () => {
               minHeight: "600px",
             }}
           >
-            <TemplatesSection />
+            {/* <TemplatesSection /> */}
+            <TemplateBuilder/>
           </Paper>
 
           {/* Right Section - Email Message */}
