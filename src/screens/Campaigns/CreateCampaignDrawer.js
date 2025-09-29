@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Dialog,
@@ -32,7 +32,7 @@ const campaignTags = [
   "Event",
 ];
 
-const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
+const CreateCampaignDrawer = ({ open, onClose, onSubmit, initialData }) => {
   const [name, setName] = useState("");
   const [draftDate, setDraftDate] = useState("");
   const [tags, setTags] = useState([]);
@@ -40,6 +40,21 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
   const [loading, setLoading] = useState(false);
   const [nameError, setNameError] = useState("");
   const { showSuccessSnackbar, showErrorSnackbar } = useSnackbarContext();
+
+  // Update form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || "");
+      setDraftDate(initialData.draftDate || "");
+      setTags(initialData.tags || []);
+      setCampaignType(initialData.campaignType || "email");
+    } else {
+      setName("");
+      setDraftDate("");
+      setTags([]);
+      setCampaignType("email");
+    }
+  }, [initialData]);
 
   const handleClose = (flag = false) => {
     onClose(flag);
@@ -63,6 +78,14 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
       date: draftDate ? new Date(draftDate).toISOString() : null,
     };
     
+    // If editing, just pass back without calling create API
+    if (initialData) {
+      onSubmit({ name, draftDate, tags, campaignType, id: initialData.id });
+      showSuccessSnackbar("Campaign updated");
+      handleClose(true);
+      return;
+    }
+
     try {
       setLoading(true);
       let response = await addData(endPoints.api.CREATE_CAMPAIGN, payload);
@@ -93,7 +116,7 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
       >
         <DialogTitle sx={{ pr: 7 }}>
           <Typography variant="h5" fontWeight={700}>
-            Create campaign
+            {initialData ? "Edit campaign" : "Create campaign"}
           </Typography>
           <Typography variant="body1" color="text.secondary" mt={0.5}>
             Set up your campaign and start reaching your audience.
@@ -237,7 +260,7 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit }) => {
               fontWeight: 600,
             }}
           >
-            Create campaign
+            {initialData ? "Save changes" : "Create campaign"}
           </DCButton>
           <DCButton
             variant="outlined"

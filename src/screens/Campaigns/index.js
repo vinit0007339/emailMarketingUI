@@ -17,6 +17,8 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -30,12 +32,44 @@ const Campaigns = () => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editInitial, setEditInitial] = useState(null);
+  const [actionAnchorEl, setActionAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [campaigns, setCampaigns] = useState([]); // New state for campaigns
   const navigate = useNavigate();
 
   const handleDrawerSubmit = (data) => {
     // Navigate to recipient screen with campaign data
     navigate("/recipient", { state: { campaignData: data } });
+  };
+
+  const openRowMenu = (event, row) => {
+    event.stopPropagation();
+    setSelectedRow(row);
+    setActionAnchorEl(event.currentTarget);
+  };
+
+  const closeRowMenu = () => {
+    setActionAnchorEl(null);
+  };
+
+  const onEditDetails = () => {
+    closeRowMenu();
+    setEditInitial(selectedRow);
+    setDrawerOpen(true);
+  };
+
+  const onEditMessage = () => {
+    closeRowMenu();
+    if (selectedRow) {
+      navigate("/recipient", { state: { campaignData: createNavigationData(selectedRow) } });
+    }
+  };
+
+  const onDelete = () => {
+    // TODO: integrate delete campaign API
+    closeRowMenu();
+    console.log("Delete campaign requested", selectedRow);
   };
 
   // Format API data for table
@@ -133,8 +167,12 @@ const Campaigns = () => {
         </Stack>
         <CreateCampaignDrawer
           open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
+          onClose={(flag) => {
+            setDrawerOpen(false);
+            setEditInitial(null);
+          }}
           onSubmit={handleDrawerSubmit}
+          initialData={editInitial}
         />
         {/* Toolbar */}
         <Paper
@@ -246,7 +284,7 @@ const Campaigns = () => {
                   <TableCell>{r.clickRate}</TableCell>
                   <TableCell>{r.activeOnSite}</TableCell>
                   <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-                    <IconButton>
+                    <IconButton onClick={(e) => openRowMenu(e, r)}>
                       <MoreVertIcon />
                     </IconButton>
                   </TableCell>
@@ -255,6 +293,17 @@ const Campaigns = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Menu
+          anchorEl={actionAnchorEl}
+          open={Boolean(actionAnchorEl)}
+          onClose={closeRowMenu}
+          PaperProps={{ sx: { borderRadius: 2 } }}
+        >
+          <MenuItem onClick={onEditMessage}>Edit message</MenuItem>
+          <MenuItem onClick={onEditDetails}>Edit details</MenuItem>
+          <Divider />
+          <MenuItem onClick={onDelete} sx={{ color: 'error.main' }}>Delete</MenuItem>
+        </Menu>
       </Box>
     </Box>
   );
