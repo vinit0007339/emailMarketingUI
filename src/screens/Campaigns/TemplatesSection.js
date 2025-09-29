@@ -25,12 +25,17 @@ import {
   Add as AddIcon,
   Help as HelpIcon,
 } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TemplatesSection = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchText, setSearchText] = useState("");
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const [sortBy, setSortBy] = useState("recent");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const campaignData = location.state?.campaignData;
+  const recipientData = location.state?.recipientData;
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -121,6 +126,11 @@ const TemplatesSection = () => {
             variant="contained"
             startIcon={<AddIcon />}
             sx={{ fontWeight: 600 }}
+            onClick={() =>
+              navigate("/template-editor", {
+                state: { campaignData, recipientData },
+              })
+            }
           >
             Create
           </Button>

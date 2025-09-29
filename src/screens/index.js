@@ -8,6 +8,7 @@ export const componentsByKey = {
   audience: lazy(() => import("./Audience")),
   recipient: lazy(() => import("./Campaigns/RecipientScreen")),
   message: lazy(() => import("./Campaigns/MessageScreen")),
+  templateEditor: lazy(() => import("./Campaigns/TemplateEditor")),
 //   forms: lazy(() => import("./Forms")),
 //   reviews: lazy(() => import("./Reviews")),
 //   inbox: lazy(() => import("./Inbox")),
