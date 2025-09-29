@@ -300,7 +300,7 @@ export default function ListsAndSegments() {
                 </Stack>
               </TableCell>
               <TableCell>{"List"}</TableCell>
-              <TableCell>{item?.members || 0}</TableCell>
+              <TableCell>{item?.contacts_count || 0}</TableCell>
               <TableCell>
                 {item.created_at
                   ? dayjs(item.created_at).format("MMM DD, YYYY, h:mm A")
@@ -331,13 +331,6 @@ export default function ListsAndSegments() {
         }}
       >
         <MenuItem onClick={handleEditAction}>Edit List Name</MenuItem>
-        {/*  <MenuItem onClick={handleActionClose}>Import data</MenuItem>
-  <MenuItem onClick={handleActionClose}>List settings</MenuItem>
-  <MenuItem onClick={handleActionClose}>Merge list</MenuItem>
-  <MenuItem onClick={handleActionClose}>Linked integrations</MenuItem>
-  <MenuItem onClick={handleActionClose}>View campaigns</MenuItem>
-  <MenuItem onClick={handleActionClose}>View excluded people</MenuItem>
-  <MenuItem onClick={handleActionClose}>View sign-up forms</MenuItem> */}
         <Divider />
         <MenuItem
           onClick={handleDeleteAction}
@@ -352,10 +345,12 @@ export default function ListsAndSegments() {
 
       <CreateListModal
         openCreateList={openCreateList}
-        onClose={(flag) => {
-          setOpenCreateList(false);
+        onClose={async (flag) => {
           if (flag) {
-            getAllList();
+            await getAllList();
+            setOpenCreateList(false);
+          } else {
+            setOpenCreateList(false);
           }
         }}
       />
@@ -363,10 +358,12 @@ export default function ListsAndSegments() {
       <EditListModal
         openEditList={openEditList}
         selectedRow={selectedRow}
-        onClose={(flag) => {
-          setOpenEditList(false);
+        onClose={async (flag) => {
           if (flag) {
-            getAllList();
+            await getAllList();
+            setOpenEditList(false);
+          } else {
+            setOpenEditList(false);
           }
         }}
       />
@@ -374,10 +371,12 @@ export default function ListsAndSegments() {
       <DeleteListModal
         deleteList={deleteList}
         selectedRow={selectedRow}
-        onClose={(flag) => {
-          setDeleteList(false);
+        onClose={async (flag) => {
           if (flag) {
-            getAllList();
+            await getAllList();
+            setDeleteList(false);
+          } else {
+            setDeleteList(false);
           }
         }}
       />

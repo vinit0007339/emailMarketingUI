@@ -45,7 +45,7 @@ export default function ListDetails() {
     try {
       dispatch(setLoading(true));
       let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
-      // dispatch(setLoading(false));
+      dispatch(setLoading(false));
       if (response.status === "success") {
         setMemberData(response.data);
       }
