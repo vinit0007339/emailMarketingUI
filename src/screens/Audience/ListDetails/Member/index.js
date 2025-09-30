@@ -1,11 +1,14 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
+  Button,
   Divider,
   IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -14,22 +17,29 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAllData } from "../../../../Utility/API";
+import { endPoints } from "../../../../constant/Environment";
+import { setLoading } from "../../../../redux/Reducers/GlobalReducer/globalSlice";
 import MemberEmptyScreen from "../MemberEmptyScreen";
 import CreateMember from "./CreateMember";
 import DeleteMember from "./DeleteMember";
-
-const Member = ({ membersData, updateList }) => {
+const Member = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [addMember, setAddMember] = useState(false);
-
+  // const [loading, setLoading] = useState(false);
   const [deleteMember, setDeleteMember] = useState(false);
 
   const [selectedRow, setSelectedRow] = useState(null);
   const [actionAnchorEl, setActionAnchorEl] = useState(null);
   const actionMenuOpen = Boolean(actionAnchorEl);
+
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get("id");
+  const [membersData, setMemberData] = useState([]);
 
   const handleActionClose = () => {
     setActionAnchorEl(null);
@@ -46,8 +56,44 @@ const Member = ({ membersData, updateList }) => {
     setSelectedRow(row);
   };
 
+  useEffect(() => {
+    if (id) {
+      getMemberInfoById(id);
+    }
+  }, [id]);
+
+  const getMemberInfoById = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
+      dispatch(setLoading(false));
+      if (response.status === "success") {
+        setMemberData(response.data);
+      }
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while fetching campaigns", err);
+    }
+  };
+
   return (
     <Box>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="flex-end"
+        sx={{ m: 2 }}
+      >
+        <Button
+          variant="outlined"
+          sx={{ textTransform: "none", fontWeight: 600 }}
+          onClick={() => {
+            setAddMember(true);
+          }}
+        >
+          Quick Add
+        </Button>
+      </Stack>
       {membersData.length > 0 ? (
         <Box mt={2}>
           <Table>
@@ -95,15 +141,18 @@ const Member = ({ membersData, updateList }) => {
           onQuickAdd={() => setAddMember(true)}
         />
       )}
-      <CreateMember
-        addMember={addMember}
-        onClose={(flag) => {
-          setAddMember(false);
-          if (flag) {
-            updateList();
-          }
-        }}
-      />
+
+      {addMember && (
+        <CreateMember
+          addMember={addMember}
+          onClose={(flag) => {
+            setAddMember(false);
+            if (flag) {
+              getMemberInfoById(id);
+            }
+          }}
+        />
+      )}
       <Menu
         anchorEl={actionAnchorEl}
         open={actionMenuOpen}
@@ -135,7 +184,7 @@ const Member = ({ membersData, updateList }) => {
         onClose={async (flag) => {
           setDeleteMember(false);
           if (flag) {
-            updateList();
+            getMemberInfoById(id);
           }
         }}
       />

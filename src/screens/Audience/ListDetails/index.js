@@ -1,61 +1,42 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, Button, Stack, Tab, Tabs, Typography, Skeleton } from "@mui/material";
+import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import DCButton from "../../../component/DCButton";
-import Member from "./Member";
-import CreateMember from "./Member/CreateMember";
-import { endPoints } from "../../../constant/Environment";
-import { getAllData } from "../../../Utility/API";
 import { useDispatch } from "react-redux";
-// import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAllData } from "../../../Utility/API";
+import DCButton from "../../../component/DCButton";
+import { endPoints } from "../../../constant/Environment";
+import Member from "./Member";
 
+import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
 export default function ListDetails() {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const [loading , setLoading] = useState(false)
-  const id = new URLSearchParams(location.search).get("id");
-
   const navigate = useNavigate();
   const [tab, setTab] = useState(0);
   const [addMember, setAddMember] = useState(false);
   const [listInfo, setListInfo] = useState("");
-  const [membersData, setMemberData] = useState([]);
+  const location = useLocation();
+  const id = new URLSearchParams(location.search).get("id");
 
   useEffect(() => {
     if (id) {
-      getMemberInfoById(id);
       getListById(id);
     }
   }, [id]);
+
   const getListById = async (id) => {
     try {
-      setLoading(true)
+      dispatch(setLoading(true));
       let response = await getAllData(`${endPoints.api.GET_LIST_BY_ID}/${id}`);
-       setLoading(false)
+      dispatch(setLoading(false));
       if (response.status === "success") {
         setListInfo(response.data);
       }
     } catch (err) {
-       setLoading(false)
+      dispatch(setLoading(false));
       console.log("Error while fetching campaigns", err);
     }
   };
-
-  const getMemberInfoById = async (id) => {
-    try {
-       setLoading(true)
-      let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
-       setLoading(false)
-      if (response.status === "success") {
-        setMemberData(response.data);
-      }
-    } catch (err) {
-       setLoading(false)
-      console.log("Error while fetching campaigns", err);
-    }
-  };
-  // console.log("listImembersDatanfo ---", membersData);
 
   return (
     <Box>
@@ -98,25 +79,24 @@ export default function ListDetails() {
               List
             </Typography>
           </Box>
-          <Stack direction="row" spacing={2}>
+          {/* <Stack direction="row" spacing={2}>
             <Button
               variant="outlined"
-              // endIcon={<KeyboardArrowDownIcon />}
               sx={{ textTransform: "none", fontWeight: 600 }}
               onClick={() => {
-                setAddMember(true);
+                
               }}
             >
               Quick Add
             </Button>
-            {/* <Button
+            <Button
             variant="outlined"
             endIcon={<KeyboardArrowDownIcon />}
             sx={{ textTransform: "none", fontWeight: 600 }}
           >
             Manage List
-          </Button> */}
-          </Stack>
+          </Button>
+          </Stack> */}
         </Stack>
       </Box>
 
@@ -126,7 +106,8 @@ export default function ListDetails() {
         onChange={(e, v) => setTab(v)}
         sx={{ borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab label={`Members (${membersData.length})`} />
+        <Tab label={`Members (${listInfo?.contacts_count})`} />
+        {/* <Tab label={`Members`} /> */}
         <Tab label="Sign-up forms" />
         <Tab label="Subscribe & preferences pages" />
         <Tab label="Imports" />
@@ -135,39 +116,7 @@ export default function ListDetails() {
         <Tab label="Settings" />
       </Tabs>
 
-      {tab === 0 && (
-        loading ? (
-          <Box mt={2}>
-            {[...Array(5)].map((_, idx) => (
-              <Box key={idx} sx={{ display: "flex", gap: 2, mb: 2 }}>
-                <Skeleton variant="circular" width={32} height={32} />
-                <Box sx={{ flex: 1 }}>
-                  <Skeleton variant="text" width="40%" />
-                  <Skeleton variant="text" width="60%" />
-                </Box>
-                <Skeleton variant="rectangular" width={80} height={32} />
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <Member
-            membersData={membersData}
-            updateList={() => {
-              getMemberInfoById(id);
-            }}
-          />
-        )
-      )}
-
-      <CreateMember
-        addMember={addMember}
-        onClose={(flag) => {
-          setAddMember(false);
-          if (flag) {
-            getMemberInfoById(id);
-          }
-        }}
-      />
+      {tab === 0 && <Member />}
     </Box>
   );
 }

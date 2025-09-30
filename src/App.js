@@ -37,7 +37,7 @@ function App() {
     },
     function (error) {
       console.log("error", error);
-      if (error.response.status == "401") {
+      if (error?.response?.status == "401") {
         localStorage.setItem("token", "");
         dispatch(setLoading(false));
         dispatch(setLoginData({ user: {}, isAuthenticated: false }));
