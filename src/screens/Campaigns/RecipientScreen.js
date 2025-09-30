@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   Link,
   InputAdornment,
-  Alert,
   IconButton,
   List,
   ListItem,
@@ -30,7 +29,7 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-import { getAllData } from "../../Utility/API";
+import { getAllData, addData } from "../../Utility/API";
 import { endPoints } from "../../constant/Environment";
 import { setLoading } from "../../redux/Reducers/GlobalReducer/globalSlice";
 
@@ -40,13 +39,13 @@ const RecipientScreen = ({onBack}) => {
   const dispatch = useDispatch();
   const campaignData = location.state?.campaignData || {};
   
-  const [selectedAudience, setSelectedAudience] = useState(null);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedSegments, setSelectedSegments] = useState([]);
   const [smartSending, setSmartSending] = useState(true);
   const [trackingEnabled, setTrackingEnabled] = useState(false);
   const [showAudienceDropdown, setShowAudienceDropdown] = useState(false);
   const [showExcludeDropdown, setShowExcludeDropdown] = useState(false);
   const [filterText, setFilterText] = useState("");
-  const [showNotification, setShowNotification] = useState(true);
   const [listData, setListData] = useState([]);
   const [segmentsData, setSegmentsData] = useState([]);
 
@@ -75,7 +74,8 @@ const RecipientScreen = ({onBack}) => {
     option.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  const estimatedRecipients = selectedAudience ? selectedAudience.count : 0;
+  // Calculate estimated recipients from selected lists and segments
+  const estimatedRecipients = [...selectedLists, ...selectedSegments].reduce((total, item) => total + (item.count || 0), 0);
 
   // API calls
   const getAllLists = useCallback(async () => {
@@ -109,15 +109,97 @@ const RecipientScreen = ({onBack}) => {
     }
   }, []);
 
+  // Load existing campaign targets
+  const loadCampaignTargets = useCallback(async () => {
+    if (!campaignData.id) return;
+    
+      try {
+        const response = await getAllData(endPoints.api.GET_CAMPAIGN_TARGETS(campaignData.id));
+        console.log("Campaign targets:", response);
+        if (response && response.data) {
+          const { lists = [], segments = [] } = response.data;
+          
+          // Transform the response data to match our component's expected format
+          const transformedLists = lists.map(list => ({
+            id: list.list_id,
+            name: list.list_name,
+            count: 0, // You might want to fetch this from another API
+            type: "list",
+            starred: false
+          }));
+          
+          const transformedSegments = segments.map(segment => ({
+            id: segment.segment_id,
+            name: segment.segment_name,
+            count: 0, // You might want to fetch this from another API
+            type: "segment",
+            starred: false
+          }));
+          
+          // Set the selected lists and segments
+          setSelectedLists(transformedLists);
+          setSelectedSegments(transformedSegments);
+        }
+    } catch (err) {
+      console.log("Error while loading campaign targets", err);
+    }
+  }, [campaignData.id]);
+
+  // Save campaign targets
+  const saveTargets = useCallback(async () => {
+    if (!campaignData.id) return;
+    
+    try {
+      const requestBody = {
+        lists: selectedLists.map(list => ({
+          list_id: list.id,
+          list_name: list.name
+        })),
+        segments: selectedSegments.map(segment => ({
+          segment_id: segment.id,
+          segment_name: segment.name
+        }))
+      };
+      dispatch(setLoading(true));
+      const response = await addData(endPoints.api.POST_CAMPAIGN_TARGETS(campaignData.id), requestBody);
+      dispatch(setLoading(false));
+      if (response && response.data) {
+        console.log("Campaign targets saved successfully", response.data);
+        return true;
+      }
+    } catch (err) {
+      dispatch(setLoading(false));
+      console.log("Error while saving campaign targets", err);
+      return false;
+    }
+  }, [campaignData.id, selectedLists, selectedSegments, dispatch]);
+
   useEffect(() => {
     getAllLists();
     getAllSegments();
   }, [getAllLists, getAllSegments]);
 
+  // Load campaign targets when component mounts
+  useEffect(() => {
+    loadCampaignTargets();
+  }, [loadCampaignTargets]);
+
   const handleAudienceSelect = (option) => {
-    setSelectedAudience(option);
-    setShowAudienceDropdown(false);
-    setFilterText("");
+    if (option.type === "list") {
+      const isSelected = selectedLists.some(list => list.id === option.id);
+      if (isSelected) {
+        setSelectedLists(prev => prev.filter(list => list.id !== option.id));
+      } else {
+        setSelectedLists(prev => [...prev, option]);
+      }
+    } else if (option.type === "segment") {
+      const isSelected = selectedSegments.some(segment => segment.id === option.id);
+      if (isSelected) {
+        setSelectedSegments(prev => prev.filter(segment => segment.id !== option.id));
+      } else {
+        setSelectedSegments(prev => [...prev, option]);
+      }
+    }
   };
 
 
@@ -125,9 +207,18 @@ const RecipientScreen = ({onBack}) => {
     navigate("/campaigns");
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Save campaign targets before proceeding
+    const saveSuccess = await saveTargets();
+    if (!saveSuccess) {
+      console.error("Failed to save campaign targets");
+      // You might want to show an error message to the user here
+      return;
+    }
+
     const recipientData = {
-      selectedAudience,
+      selectedLists,
+      selectedSegments,
       smartSending,
       trackingEnabled,
     };
@@ -189,11 +280,15 @@ const RecipientScreen = ({onBack}) => {
                   Send to
                 </Typography>
                 <Box sx={{ position: "relative" }}>
-                  <TextField
-                    fullWidth
-                    placeholder="Select a list or segment"
-                    value={selectedAudience?.name || ""}
-                    onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
+                <TextField
+                  fullWidth
+                  placeholder="Select lists or segments"
+                  value={
+                    [...selectedLists, ...selectedSegments].length > 0
+                      ? `${[...selectedLists, ...selectedSegments].length} item(s) selected`
+                      : ""
+                  }
+                  onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
                     InputProps={{
                       readOnly: true,
                       endAdornment: (
@@ -265,18 +360,18 @@ const RecipientScreen = ({onBack}) => {
                                 >
                                   <ListItemIcon sx={{ minWidth: 40 }}>
                                     <Checkbox
-                                      checked={selectedAudience?.id === option.id}
+                                      checked={selectedLists.some(list => list.id === option.id)}
                                       size="small"
                                     />
                                   </ListItemIcon>
                                   <ListItemText
                                     primary={
-                                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                      <Box sx={{ display: "flex", alignItems: "center" }}>
                                         <Typography variant="body2">
                                           {option.name} ({option.count})
                                         </Typography>
                                         {option.starred && (
-                                          <StarIcon sx={{ fontSize: 16, color: "#ffc107" }} />
+                                          <StarIcon sx={{ fontSize: 16, color: "#ffc107", ml: 1 }} />
                                         )}
                                       </Box>
                                     }
@@ -306,7 +401,7 @@ const RecipientScreen = ({onBack}) => {
                                 >
                                   <ListItemIcon sx={{ minWidth: 40 }}>
                                     <Checkbox
-                                      checked={selectedAudience?.id === option.id}
+                                      checked={selectedSegments.some(segment => segment.id === option.id)}
                                       size="small"
                                     />
                                   </ListItemIcon>
@@ -326,6 +421,69 @@ const RecipientScreen = ({onBack}) => {
                   )}
                 </Box>
               </Box>
+
+              {/* Selected Items Display */}
+              {(selectedLists.length > 0 || selectedSegments.length > 0) && (
+                <Box>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Selected Items:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                    {selectedLists.map((list) => (
+                      <Box
+                        key={list.id}
+                        sx={{
+                          bgcolor: "#e3f2fd",
+                          color: "#1976d2",
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1,
+                          fontSize: "0.75rem",
+                          display: "flex",
+                          alignItems: "center",
+                          mr: 1,
+                          mb: 1,
+                        }}
+                      >
+                        <Typography variant="caption">{list.name}</Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleAudienceSelect(list)}
+                          sx={{ p: 0, ml: 1 }}
+                        >
+                          <CloseIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                      </Box>
+                    ))}
+                    {selectedSegments.map((segment) => (
+                      <Box
+                        key={segment.id}
+                        sx={{
+                          bgcolor: "#f3e5f5",
+                          color: "#7b1fa2",
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1,
+                          fontSize: "0.75rem",
+                          display: "flex",
+                          alignItems: "center",
+                          mr: 1,
+                          mb: 1,
+                        }}
+                      >
+                        <Typography variant="caption">{segment.name}</Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleAudienceSelect(segment)}
+                          sx={{ p: 0, ml: 1 }}
+                        >
+                          <CloseIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              )}
 
               {/* Don't send to Field */}
               <Box>
@@ -445,7 +603,7 @@ const RecipientScreen = ({onBack}) => {
             <Button
               variant="contained"
               onClick={handleNext}
-              disabled={!selectedAudience}
+              disabled={selectedLists.length === 0 && selectedSegments.length === 0}
             >
               Next
             </Button>

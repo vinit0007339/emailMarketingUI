@@ -24,8 +24,13 @@ export const endPoints = {
 
     // create MEMBER
     CREATE_MEMBER: "contacts",
+
+    // Campaign Targets API
+    GET_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
+    POST_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
   },
   mode: "Development",
 };
 
-export default {};
+const defaultExport = {};
+export default defaultExport;
