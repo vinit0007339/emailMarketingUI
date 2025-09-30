@@ -14,23 +14,28 @@ import Loader from "../../../../component/Loader";
 import { useSnackbarContext } from "../../../../component/SnackbarContext";
 import { endPoints } from "../../../../constant/Environment";
 import { deleteData } from "../../../../Utility/API";
-export default function DeleteMember({ deleteMember, onClose, selectedRow, }) {
+export default function DeleteMember({ deleteMember, onClose, selectedRow }) {
   const [loading, setLoading] = useState(false);
   const { showSuccessSnackbar, showErrorSnackbar } = useSnackbarContext();
   const handleClose = (flag = false) => {
     onClose(flag);
   };
 
-
-  // console.log('selec',selected)
+  console.log("selec", selectedRow);
   const handleDelete = async () => {
-    console.log('selectedRow._id,listId',selectedRow.contact_id,selectedRow.list_id)
+    console.log(
+      "selectedRow._id,listId",
+      selectedRow.contact_id,
+      selectedRow.list_id
+    );
     try {
       setLoading(true);
       let response = await deleteData(
-         endPoints.api.DELETE_IN_CONTACT_FROM_LIST(selectedRow.contact_id,selectedRow.list_id),
+        endPoints.api.DELETE_IN_CONTACT_FROM_LIST(
+          selectedRow.contact_id,
+          selectedRow.list_id
+        )
       );
-
 
       setLoading(false);
       if (response.data.success) {
@@ -58,7 +63,7 @@ export default function DeleteMember({ deleteMember, onClose, selectedRow, }) {
       >
         <DialogTitle sx={{ pr: 7 }}>
           <Typography variant="h5" fontWeight={800} fontSize={20}>
-            Delete list
+            Remove profile
           </Typography>
           <IconButton
             aria-label="close"
@@ -73,12 +78,11 @@ export default function DeleteMember({ deleteMember, onClose, selectedRow, }) {
         <DialogContent sx={{ pt: 0 }}>
           <Loader loading={loading} />
           <Typography variant="body1" mt={1.5} fontSize={16} lineHeight={1.6}>
-            You are about to delete{" "}
+            You’re about to remove{" "}
             <Typography component="span" fontWeight={800} fontSize={16}>
-              {selectedRow?.name || "this list"}
+              {selectedRow?.contact?.email}{" "}
             </Typography>
-            . Deleting this list may affect existing campaigns associated with
-            it.This action cannot be undone.
+            from this list.
             {/* , forms, or flows
             associated with it. This action cannot be undone. */}
           </Typography>
