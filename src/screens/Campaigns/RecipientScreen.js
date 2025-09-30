@@ -51,20 +51,20 @@ const RecipientScreen = ({onBack}) => {
   const [segmentsData, setSegmentsData] = useState([]);
 
   // Format API data for dropdown options
-  const formatListData = (data) => 
+  const formatListData = (data) =>
     data.map((item) => ({
-      id: item._id,
+      id: item._id || item.id,
       name: item.name,
-      count: item.members || 0,
+      count: item.members || item.count || 0,
       type: "list",
       starred: item.starred || false,
     }));
 
-  const formatSegmentData = (data) => 
+  const formatSegmentData = (data) =>
     data.map((item) => ({
-      id: item._id,
+      id: item._id || item.id,
       name: item.name,
-      count: item.members || 0,
+      count: item.members || item.count || 0,
       type: "segment",
       starred: item.starred || false,
     }));
@@ -83,8 +83,16 @@ const RecipientScreen = ({onBack}) => {
       dispatch(setLoading(true));
       let response = await getAllData(endPoints.api.GET_ALL_LIST);
       dispatch(setLoading(false));
-      setListData(response.lists);
-      // need to review currenlty direct bind the list only
+      const payload = response?.data ?? response;
+      // Support multiple shapes: {lists, segments}, {data:{lists,segments}}, or array
+      const lists = Array.isArray(payload)
+        ? payload
+        : payload?.lists ?? payload?.data?.lists ?? [];
+      const segments = Array.isArray(payload?.segments)
+        ? payload.segments
+        : payload?.data?.segments ?? [];
+      setListData(lists);
+      setSegmentsData(segments);
     } catch (err) {
       dispatch(setLoading(false));
       console.log("Error while fetching lists", err);
@@ -445,7 +453,7 @@ const RecipientScreen = ({onBack}) => {
         </Stack>
 
         {/* Notification Banner */}
-        {showNotification && (
+        {/* {showNotification && (
           <Alert
             severity="info"
             sx={{
@@ -473,10 +481,10 @@ const RecipientScreen = ({onBack}) => {
             You can now configure tags and campaign name through selecting the gear icon at the top
             of the page.
           </Alert>
-        )}
+        )} */}
 
         {/* Help Button */}
-        <IconButton
+        {/* <IconButton
           sx={{
             position: "fixed",
             bottom: 24,
@@ -489,7 +497,7 @@ const RecipientScreen = ({onBack}) => {
           }}
         >
           <HelpIcon />
-        </IconButton>
+        </IconButton> */}
       </Box>
     </Box>
   );

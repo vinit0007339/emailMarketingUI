@@ -11,6 +11,7 @@ const routeMap = {
   analytics: "/analytics",
   recipient: "/recipient",
   message: "/message",
+  templateEditor: "/template-editor",
   
 };
 
