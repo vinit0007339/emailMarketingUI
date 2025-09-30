@@ -12,6 +12,7 @@ const routeMap = {
   recipient: "/recipient",
   message: "/message",
   templateEditor: "/template-editor",
+  people: "people"
   
 };
 

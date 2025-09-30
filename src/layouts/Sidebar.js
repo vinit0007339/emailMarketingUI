@@ -65,6 +65,7 @@ export default function Sidebar({
         audience: "/lists",
         content: "/content",
         analytics: "/analytics",
+        profile: "/people",
       },
     [routeMapProp]
   );
@@ -82,9 +83,13 @@ export default function Sidebar({
         label: "Audience",
         emoji: "👥",
         children: [
-          { key: "growth-tools", label: "Growth tools", path: "/audience/growth-tools" },
+          {
+            key: "growth-tools",
+            label: "Growth tools",
+            path: "/audience/growth-tools",
+          },
           { key: "lists-segments", label: "Lists & segments", path: "/lists" },
-          { key: "profiles", label: "Profiles", path: "/audience/profiles" },
+          { key: "profiles", label: "Profiles", path: "/people" },
         ],
       },
       { key: "content", label: "Content", emoji: "🧩" },
@@ -150,7 +155,6 @@ export default function Sidebar({
         PaperProps={{ elevation: 1 }}
         aria-label="Primary"
       >
-
         <IconButton
           onClick={() => setCollapsed((v) => !v)}
           aria-label={collapsed ? "Expand menu" : "Collapse to mini menu"}
@@ -236,9 +240,9 @@ export default function Sidebar({
                       }}
                     />
                   )}
-                  {n.children && !collapsed && (
-                    openSections[n.key] ? <ExpandLess /> : <ExpandMore />
-                  )}
+                  {n.children &&
+                    !collapsed &&
+                    (openSections[n.key] ? <ExpandLess /> : <ExpandMore />)}
                 </ListItemButton>
               </ListItem>
               {n.children && openSections[n.key] && (

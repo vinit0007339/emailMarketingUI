@@ -1,5 +1,6 @@
 // src/pages/index.js
 import { lazy } from "react";
+import People from "./Audience/People";
 
 export const componentsByKey = {
   home: lazy(() => import("./Home")),
@@ -9,6 +10,8 @@ export const componentsByKey = {
   recipient: lazy(() => import("./Campaigns/RecipientScreen")),
   message: lazy(() => import("./Campaigns/MessageScreen")),
   templateEditor: lazy(() => import("./Campaigns/TemplateEditor")),
+   people: lazy(() => import("./Audience/People")),
+
 //   forms: lazy(() => import("./Forms")),
 //   reviews: lazy(() => import("./Reviews")),
 //   inbox: lazy(() => import("./Inbox")),
