@@ -11,6 +11,7 @@ export const endPoints = {
     //Email Marketing
     GET_ALL_CAMPAIGNS: "campaign",
     CREATE_CAMPAIGN: "campaign",
+    UPDATE_CAMPAIGN: "campaign",
     DELETE_CAMPAIGN: "campaign",
 
     //List Api

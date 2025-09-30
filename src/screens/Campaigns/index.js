@@ -41,7 +41,12 @@ const Campaigns = () => {
   const navigate = useNavigate();
 
   const handleDrawerSubmit = (data) => {
-    // Navigate to recipient screen with campaign data
+    // If editing, refresh the campaign list
+    if (editInitial) {
+      getAllCampaigns();
+      return;
+    }
+    // Navigate to recipient screen with campaign data for new campaigns
     navigate("/recipient", { state: { campaignData: data } });
   };
 
@@ -168,7 +173,10 @@ const Campaigns = () => {
         </Stack>
         <CreateCampaignDrawer
           open={drawerOpen}
-          onClose={(flag) => {
+          onClose={async (flag) => {
+            if (flag && editInitial) {
+              await getAllCampaigns();
+            }
             setDrawerOpen(false);
             setEditInitial(null);
           }}
