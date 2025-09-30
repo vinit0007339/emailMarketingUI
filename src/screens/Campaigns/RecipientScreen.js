@@ -41,6 +41,8 @@ const RecipientScreen = ({onBack}) => {
   
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedSegments, setSelectedSegments] = useState([]);
+  const [initialLists, setInitialLists] = useState([]);
+  const [initialSegments, setInitialSegments] = useState([]);
   const [smartSending, setSmartSending] = useState(true);
   const [trackingEnabled, setTrackingEnabled] = useState(false);
   const [showAudienceDropdown, setShowAudienceDropdown] = useState(false);
@@ -76,6 +78,21 @@ const RecipientScreen = ({onBack}) => {
 
   // Calculate estimated recipients from selected lists and segments
   const estimatedRecipients = [...selectedLists, ...selectedSegments].reduce((total, item) => total + (item.count || 0), 0);
+
+  // Helper function to check if selections have changed
+  const hasSelectionsChanged = () => {
+    // Compare lists
+    const listsChanged = selectedLists.length !== initialLists.length ||
+      selectedLists.some(list => !initialLists.some(initial => initial.id === list.id)) ||
+      initialLists.some(initial => !selectedLists.some(list => list.id === initial.id));
+    
+    // Compare segments
+    const segmentsChanged = selectedSegments.length !== initialSegments.length ||
+      selectedSegments.some(segment => !initialSegments.some(initial => initial.id === segment.id)) ||
+      initialSegments.some(initial => !selectedSegments.some(segment => segment.id === initial.id));
+    
+    return listsChanged || segmentsChanged;
+  };
 
   // API calls
   const getAllLists = useCallback(async () => {
@@ -139,6 +156,10 @@ const RecipientScreen = ({onBack}) => {
           // Set the selected lists and segments
           setSelectedLists(transformedLists);
           setSelectedSegments(transformedSegments);
+          
+          // Store initial state for comparison
+          setInitialLists(transformedLists);
+          setInitialSegments(transformedSegments);
         }
     } catch (err) {
       console.log("Error while loading campaign targets", err);
@@ -208,12 +229,17 @@ const RecipientScreen = ({onBack}) => {
   };
 
   const handleNext = async () => {
-    // Save campaign targets before proceeding
-    const saveSuccess = await saveTargets();
-    if (!saveSuccess) {
-      console.error("Failed to save campaign targets");
-      // You might want to show an error message to the user here
-      return;
+    // Only save campaign targets if there are changes
+    if (hasSelectionsChanged()) {
+      console.log("Selections have changed, saving campaign targets...");
+      const saveSuccess = await saveTargets();
+      if (!saveSuccess) {
+        console.error("Failed to save campaign targets");
+        // You might want to show an error message to the user here
+        return;
+      }
+    } else {
+      console.log("No changes in selections, skipping API call");
     }
 
     const recipientData = {
