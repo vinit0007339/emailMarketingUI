@@ -59,6 +59,7 @@ export const deleteData = async (endpoint) => {
 };
 
 export const getAllData = async (url) => {
+  console.log('url',url)
   try {
     let result = await axiosInstance.get(url);
     return result.data;

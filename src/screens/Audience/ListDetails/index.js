@@ -1,5 +1,5 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, Button, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Stack, Tab, Tabs, Typography, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DCButton from "../../../component/DCButton";
@@ -8,11 +8,12 @@ import CreateMember from "./Member/CreateMember";
 import { endPoints } from "../../../constant/Environment";
 import { getAllData } from "../../../Utility/API";
 import { useDispatch } from "react-redux";
-import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
+// import { setLoading } from "../../../redux/Reducers/GlobalReducer/globalSlice";
 
 export default function ListDetails() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const [loading , setLoading] = useState(false)
   const id = new URLSearchParams(location.search).get("id");
 
   const navigate = useNavigate();
@@ -29,28 +30,28 @@ export default function ListDetails() {
   }, [id]);
   const getListById = async (id) => {
     try {
-      dispatch(setLoading(true));
+      setLoading(true)
       let response = await getAllData(`${endPoints.api.GET_LIST_BY_ID}/${id}`);
-      dispatch(setLoading(false));
+       setLoading(false)
       if (response.status === "success") {
         setListInfo(response.data);
       }
     } catch (err) {
-      dispatch(setLoading(false));
+       setLoading(false)
       console.log("Error while fetching campaigns", err);
     }
   };
 
   const getMemberInfoById = async (id) => {
     try {
-      dispatch(setLoading(true));
+       setLoading(true)
       let response = await getAllData(endPoints.api.LIST_IN_CONTACT(id));
-      dispatch(setLoading(false));
+       setLoading(false)
       if (response.status === "success") {
         setMemberData(response.data);
       }
     } catch (err) {
-      dispatch(setLoading(false));
+       setLoading(false)
       console.log("Error while fetching campaigns", err);
     }
   };
@@ -68,7 +69,7 @@ export default function ListDetails() {
         <DCButton
           variant="text"
           color="primary"
-          onClick={() => navigate("/audience")}
+          onClick={() => navigate("/lists")}
           sx={{ textTransform: "none", mb: 1 }}
           startIcon={<ArrowBackIosNewIcon fontSize="small" />}
         >
@@ -135,12 +136,27 @@ export default function ListDetails() {
       </Tabs>
 
       {tab === 0 && (
-        <Member
-          membersData={membersData}
-          updateList={() => {
-            getMemberInfoById(id);
-          }}
-        />
+        loading ? (
+          <Box mt={2}>
+            {[...Array(5)].map((_, idx) => (
+              <Box key={idx} sx={{ display: "flex", gap: 2, mb: 2 }}>
+                <Skeleton variant="circular" width={32} height={32} />
+                <Box sx={{ flex: 1 }}>
+                  <Skeleton variant="text" width="40%" />
+                  <Skeleton variant="text" width="60%" />
+                </Box>
+                <Skeleton variant="rectangular" width={80} height={32} />
+              </Box>
+            ))}
+          </Box>
+        ) : (
+          <Member
+            membersData={membersData}
+            updateList={() => {
+              getMemberInfoById(id);
+            }}
+          />
+        )
       )}
 
       <CreateMember

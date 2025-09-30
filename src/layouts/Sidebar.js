@@ -1,5 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import {
   Box,
   Drawer,
@@ -34,10 +36,15 @@ export default function Sidebar({
   routeMap: routeMapProp,
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [openSections, setOpenSections] = useState({});
   const theme = useTheme();
   const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
   const navigate = useNavigate();
   const location = useLocation();
+
+  const toggleSection = (key) => {
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   useEffect(() => {
     if (!isSmUp) {
@@ -55,7 +62,7 @@ export default function Sidebar({
         forms: "/forms",
         reviews: "/reviews",
         inbox: "/inbox",
-        audience: "/audience",
+        audience: "/lists",
         content: "/content",
         analytics: "/analytics",
       },
@@ -70,7 +77,16 @@ export default function Sidebar({
       { key: "forms", label: "Sign‑up forms", emoji: "📝" },
       { key: "reviews", label: "Reviews", emoji: "⭐" },
       { key: "inbox", label: "Inbox", emoji: "📥" },
-      { key: "audience", label: "Audience", emoji: "👥" },
+      {
+        key: "audience",
+        label: "Audience",
+        emoji: "👥",
+        children: [
+          { key: "growth-tools", label: "Growth tools", path: "/audience/growth-tools" },
+          { key: "lists-segments", label: "Lists & segments", path: "/lists" },
+          { key: "profiles", label: "Profiles", path: "/audience/profiles" },
+        ],
+      },
       { key: "content", label: "Content", emoji: "🧩" },
       { key: "analytics", label: "Analytics", emoji: "📊" },
     ],
@@ -164,59 +180,91 @@ export default function Sidebar({
           }}
         >
           {nav.map((n) => (
-            <ListItem key={n.key} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                selected={selectedKey === n.key}
-                onClick={() => {
-                  const path = routeMap[n.key] || "/";
-                  navigate(path);
-                }}
-                sx={{
-                  borderRadius: 2,
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 0.75, sm: 1.25 },
-                  color: "text.primary",
-                  "&.Mui-selected": {
-                    background:
-                      "linear-gradient(#fff,#fff) padding-box, linear-gradient(45deg, rgba(10,132,255,.25), rgba(138,43,226,.25)) border-box",
-                    border: "1px solid transparent",
-                  },
-                  "&:hover": {
-                    backgroundColor: "#f5f7fb",
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: collapsed ? "auto" : { xs: 1, sm: 1.5 },
-                    justifyContent: "center",
-                    fontSize: { xs: 16, sm: 18 },
-                    userSelect: "none",
+            <Box key={n.key}>
+              <ListItem disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  selected={selectedKey === n.key}
+                  onClick={() => {
+                    if (n.children) {
+                      toggleSection(n.key);
+                    } else {
+                      const path = routeMap[n.key] || "/";
+                      navigate(path);
+                    }
                   }}
-                  aria-hidden="true"
+                  sx={{
+                    borderRadius: 2,
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 0.75, sm: 1.25 },
+                    color: "text.primary",
+                    "&.Mui-selected": {
+                      background:
+                        "linear-gradient(#fff,#fff) padding-box, linear-gradient(45deg, rgba(10,132,255,.25), rgba(138,43,226,.25)) border-box",
+                      border: "1px solid transparent",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#f5f7fb",
+                    },
+                  }}
                 >
-                  <Typography
-                    component="span"
-                    variant="body1"
-                    sx={{ lineHeight: 1 }}
-                  >
-                    {n.emoji}
-                  </Typography>
-                </ListItemIcon>
-                {!collapsed && (
-                  <ListItemText
-                    primary={n.label}
+                  <ListItemIcon
                     sx={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      fontSize: { xs: 12.5, sm: 14 },
+                      minWidth: 0,
+                      mr: collapsed ? "auto" : { xs: 1, sm: 1.5 },
+                      justifyContent: "center",
+                      fontSize: { xs: 16, sm: 18 },
+                      userSelect: "none",
                     }}
-                  />
-                )}
-              </ListItemButton>
-            </ListItem>
+                    aria-hidden="true"
+                  >
+                    <Typography
+                      component="span"
+                      variant="body1"
+                      sx={{ lineHeight: 1 }}
+                    >
+                      {n.emoji}
+                    </Typography>
+                  </ListItemIcon>
+                  {!collapsed && (
+                    <ListItemText
+                      primary={n.label}
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: { xs: 12.5, sm: 14 },
+                      }}
+                    />
+                  )}
+                  {n.children && !collapsed && (
+                    openSections[n.key] ? <ExpandLess /> : <ExpandMore />
+                  )}
+                </ListItemButton>
+              </ListItem>
+              {n.children && openSections[n.key] && (
+                <List component="div" disablePadding sx={{ pl: 4 }}>
+                  {n.children.map((child) => (
+                    <ListItem key={child.key} disablePadding>
+                      <ListItemButton
+                        selected={location.pathname.startsWith(child.path)}
+                        onClick={() => navigate(child.path)}
+                        sx={{
+                          pl: 2,
+                          py: 0.75,
+                          color: "text.primary",
+                          "&.Mui-selected": {
+                            color: "primary.main",
+                            fontWeight: 600,
+                          },
+                        }}
+                      >
+                        <ListItemText primary={child.label} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
           ))}
         </List>
       </Drawer>

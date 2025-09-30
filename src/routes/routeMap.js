@@ -6,7 +6,7 @@ const routeMap = {
   forms: "/forms",
   reviews: "/reviews",
   inbox: "/inbox",
-  audience: "/audience",
+  audience: "/lists",
   content: "/content",
   analytics: "/analytics",
   recipient: "/recipient",
