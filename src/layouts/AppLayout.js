@@ -24,7 +24,7 @@ export default function AppLayout({ isLoggedIn, routeMap }) {
       {/* Your <AppBar /> goes here */}
       <Header />
       <Box sx={{ flex: 1, display: "flex", position: "relative" }}>
-        {pathname === "/message" ? null : (
+        {pathname === "/template-editor" ? null : (
           <Sidebar
             isLoggedIn={isLoggedIn}
             headerHeight={HEADER_H}
