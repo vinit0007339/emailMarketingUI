@@ -360,8 +360,9 @@ export default function ListsAndSegments() {
         selectedRow={selectedRow}
         onClose={async (flag) => {
           if (flag) {
+           setOpenEditList(false);
             await getAllList();
-            setOpenEditList(false);
+          
           } else {
             setOpenEditList(false);
           }
