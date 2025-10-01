@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   Box,
   Typography,
@@ -50,6 +50,7 @@ const RecipientScreen = ({onBack}) => {
   const [filterText, setFilterText] = useState("");
   const [listData, setListData] = useState([]);
   const [segmentsData, setSegmentsData] = useState([]);
+  const dropdownRef = useRef(null);
 
   // Format API data for dropdown options
   const formatListData = (data) =>
@@ -216,6 +217,24 @@ const RecipientScreen = ({onBack}) => {
     loadCampaignTargets();
   }, [loadCampaignTargets]);
 
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowAudienceDropdown(false);
+        setFilterText("");
+      }
+    };
+
+    if (showAudienceDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAudienceDropdown]);
+
   const handleAudienceSelect = (option) => {
     if (option.type === "list") {
       const isSelected = selectedLists.some(list => list.id === option.id);
@@ -232,6 +251,10 @@ const RecipientScreen = ({onBack}) => {
         setSelectedSegments(prev => [...prev, option]);
       }
     }
+    
+    // Close dropdown after selection
+    setShowAudienceDropdown(false);
+    setFilterText("");
   };
 
 
@@ -316,16 +339,16 @@ const RecipientScreen = ({onBack}) => {
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                   Send to
                 </Typography>
-                <Box sx={{ position: "relative" }}>
-                <TextField
-                  fullWidth
-                  placeholder="Select lists or segments"
-                  value={
-                    [...selectedLists, ...selectedSegments].length > 0
-                      ? `${[...selectedLists, ...selectedSegments].length} item(s) selected`
-                      : ""
-                  }
-                  onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
+                <Box sx={{ position: "relative" }} ref={dropdownRef}>
+                  <TextField
+                    fullWidth
+                    placeholder="Select lists or segments"
+                    value={
+                      [...selectedLists, ...selectedSegments].length > 0
+                        ? `${[...selectedLists, ...selectedSegments].length} item(s) selected`
+                        : ""
+                    }
+                    onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
                     InputProps={{
                       readOnly: true,
                       endAdornment: (
