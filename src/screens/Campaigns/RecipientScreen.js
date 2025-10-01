@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -37,7 +37,7 @@ const RecipientScreen = ({onBack}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const campaignData = location.state?.campaignData || {};
+  const campaignData = useMemo(() => location.state?.campaignData || {}, [location.state?.campaignData]);
   
   const [selectedLists, setSelectedLists] = useState([]);
   const [selectedSegments, setSelectedSegments] = useState([]);
@@ -130,41 +130,43 @@ const RecipientScreen = ({onBack}) => {
   const loadCampaignTargets = useCallback(async () => {
     if (!campaignData.id) return;
     
-      try {
-        const response = await getAllData(endPoints.api.GET_CAMPAIGN_TARGETS(campaignData.id));
-        console.log("Campaign targets:", response);
-        if (response && response.data) {
-          const { lists = [], segments = [] } = response.data;
-          
-          // Transform the response data to match our component's expected format
-          const transformedLists = lists.map(list => ({
-            id: list.list_id,
-            name: list.list_name,
-            count: 0, // You might want to fetch this from another API
-            type: "list",
-            starred: false
-          }));
-          
-          const transformedSegments = segments.map(segment => ({
-            id: segment.segment_id,
-            name: segment.segment_name,
-            count: 0, // You might want to fetch this from another API
-            type: "segment",
-            starred: false
-          }));
-          
-          // Set the selected lists and segments
-          setSelectedLists(transformedLists);
-          setSelectedSegments(transformedSegments);
-          
-          // Store initial state for comparison
-          setInitialLists(transformedLists);
-          setInitialSegments(transformedSegments);
-        }
+    try {
+      const response = await getAllData(endPoints.api.GET_CAMPAIGN_TARGETS(campaignData.id));
+            
+      if (response && response.data) {
+        const { lists = [], segments = [] } = response.data;
+        
+        // Transform the response data to match our component's expected format
+        const transformedLists = lists.map(list => ({
+          id: list.list_id,
+          name: list.list_name,
+          count: 0, // You might want to fetch this from another API
+          type: "list",
+          starred: false
+        }));
+        
+        const transformedSegments = segments.map(segment => ({
+          id: segment.segment_id,
+          name: segment.segment_name,
+          count: 0, // You might want to fetch this from another API
+          type: "segment",
+          starred: false
+        }));
+        
+        // Set the selected lists and segments
+        setSelectedLists(transformedLists);
+        setSelectedSegments(transformedSegments);
+        
+        // Store initial state for comparison
+        setInitialLists(transformedLists);
+        setInitialSegments(transformedSegments);
+      } else {
+        console.log("No data in GET response or response is falsy");
+      }
     } catch (err) {
-      console.log("Error while loading campaign targets", err);
+      console.log("Error Object:", err);
     }
-  }, [campaignData.id]);
+  }, [campaignData]);
 
   // Save campaign targets
   const saveTargets = useCallback(async () => {
@@ -172,28 +174,30 @@ const RecipientScreen = ({onBack}) => {
     
     try {
       const requestBody = {
-        lists: selectedLists.map(list => ({
-          list_id: list.id,
-          list_name: list.name
-        })),
-        segments: selectedSegments.map(segment => ({
-          segment_id: segment.id,
-          segment_name: segment.name
-        }))
+        list_ids: selectedLists.map(list => list.id),
+        segment_ids: selectedSegments.map(segment => segment.id)
       };
+      
+      
       dispatch(setLoading(true));
       const response = await addData(endPoints.api.POST_CAMPAIGN_TARGETS(campaignData.id), requestBody);
       dispatch(setLoading(false));
+      
+     
+      
       if (response && response.data) {
         console.log("Campaign targets saved successfully", response.data);
         return true;
+      } else {
+        console.log("No data in response or response is falsy");
+        return false;
       }
     } catch (err) {
       dispatch(setLoading(false));
-      console.log("Error while saving campaign targets", err);
+      console.log("Error Object:", err);
       return false;
     }
-  }, [campaignData.id, selectedLists, selectedSegments, dispatch]);
+  }, [campaignData, selectedLists, selectedSegments, dispatch]);
 
   useEffect(() => {
     getAllLists();
