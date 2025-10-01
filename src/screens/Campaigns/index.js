@@ -267,7 +267,7 @@ const Campaigns = () => {
                   </TableCell>
                   <TableCell>
                     <Stack spacing={0.25}>
-                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        <Typography variant="body1" color="primary" sx={{ fontWeight: 600,cursor: "pointer"  }}>
                         {r.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
