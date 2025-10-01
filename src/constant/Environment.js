@@ -11,6 +11,8 @@ export const endPoints = {
     //Email Marketing
     GET_ALL_CAMPAIGNS: "campaign",
     CREATE_CAMPAIGN: "campaign",
+    UPDATE_CAMPAIGN: "campaign",
+    DELETE_CAMPAIGN: "campaign",
 
     //List Api
     GET_ALL_LIST: "lists/all",  //lists
@@ -24,8 +26,13 @@ export const endPoints = {
 
     // create MEMBER
     CREATE_MEMBER: "contacts",
+
+    // Campaign Targets API
+    GET_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
+    POST_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
   },
   mode: "Development",
 };
 
-export default {};
+const defaultExport = {};
+export default defaultExport;

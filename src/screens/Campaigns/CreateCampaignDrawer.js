@@ -18,7 +18,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import EmailIcon from "@mui/icons-material/Email";
 import MessageIcon from "@mui/icons-material/Message";
 import CampaignIcon from "@mui/icons-material/Campaign";
-import { addData } from "../../Utility/API";
+import { addData, updateData } from "../../Utility/API";
 import { endPoints } from "../../constant/Environment";
 import { useSnackbarContext } from "../../component/SnackbarContext";
 import DCButton from "../../component/DCButton";
@@ -78,11 +78,35 @@ const CreateCampaignDrawer = ({ open, onClose, onSubmit, initialData }) => {
       date: draftDate ? new Date(draftDate).toISOString() : null,
     };
     
-    // If editing, just pass back without calling create API
+    // If editing, call update API
     if (initialData) {
-      onSubmit({ name, draftDate, tags, campaignType, id: initialData.id });
-      showSuccessSnackbar("Campaign updated");
-      handleClose(true);
+      try {
+        setLoading(true);
+        const updatePayload = {
+          name,
+          channel: 1,
+          type: 1,
+          date: draftDate ? new Date(draftDate).toISOString() : null,
+        };
+        
+        let response = await updateData(
+          `${endPoints.api.UPDATE_CAMPAIGN}/${initialData.id}`,
+          updatePayload
+        );
+        setLoading(false);
+        
+        if (response.data.status === "success") {
+          showSuccessSnackbar("Campaign updated successfully!");
+          onSubmit({ name, draftDate, tags, campaignType, id: initialData.id });
+          handleClose(true);
+        } else {
+          showErrorSnackbar("Failed to update campaign. Please try again.");
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        showErrorSnackbar("Failed to update campaign. Please try again.");
+      }
       return;
     }
 

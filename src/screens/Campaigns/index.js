@@ -25,6 +25,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EmailIcon from "@mui/icons-material/Email";
 import CreateCampaignDrawer from "./CreateCampaignDrawer";
+import DeleteCampaignModal from "./DeleteCampaignModal";
 import { getAllData } from "../../Utility/API";
 import { endPoints } from "../../constant/Environment";
 
@@ -36,10 +37,16 @@ const Campaigns = () => {
   const [actionAnchorEl, setActionAnchorEl] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [campaigns, setCampaigns] = useState([]); // New state for campaigns
+  const [deleteCampaign, setDeleteCampaign] = useState(false);
   const navigate = useNavigate();
 
   const handleDrawerSubmit = (data) => {
-    // Navigate to recipient screen with campaign data
+    // If editing, refresh the campaign list
+    if (editInitial) {
+      getAllCampaigns();
+      return;
+    }
+    // Navigate to recipient screen with campaign data for new campaigns
     navigate("/recipient", { state: { campaignData: data } });
   };
 
@@ -67,9 +74,8 @@ const Campaigns = () => {
   };
 
   const onDelete = () => {
-    // TODO: integrate delete campaign API
     closeRowMenu();
-    console.log("Delete campaign requested", selectedRow);
+    setDeleteCampaign(true);
   };
 
   // Format API data for table
@@ -167,7 +173,10 @@ const Campaigns = () => {
         </Stack>
         <CreateCampaignDrawer
           open={drawerOpen}
-          onClose={(flag) => {
+          onClose={async (flag) => {
+            if (flag && editInitial) {
+              await getAllCampaigns();
+            }
             setDrawerOpen(false);
             setEditInitial(null);
           }}
@@ -304,6 +313,19 @@ const Campaigns = () => {
           <Divider />
           <MenuItem onClick={onDelete} sx={{ color: 'error.main' }}>Delete</MenuItem>
         </Menu>
+
+        <DeleteCampaignModal
+          deleteCampaign={deleteCampaign}
+          selectedRow={selectedRow}
+          onClose={async (flag) => {
+            if (flag) {
+              await getAllCampaigns();
+              setDeleteCampaign(false);
+            } else {
+              setDeleteCampaign(false);
+            }
+          }}
+        />
       </Box>
     </Box>
   );
