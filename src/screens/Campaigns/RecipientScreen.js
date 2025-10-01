@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   Box,
   Typography,
@@ -50,24 +50,25 @@ const RecipientScreen = ({onBack}) => {
   const [filterText, setFilterText] = useState("");
   const [listData, setListData] = useState([]);
   const [segmentsData, setSegmentsData] = useState([]);
+  const dropdownRef = useRef(null);
 
   // Format API data for dropdown options
   const formatListData = (data) =>
     data.map((item) => ({
       id: item._id || item.id,
       name: item.name,
-      count: item.members || item.count || 0,
+      count: item.contacts_count || 0,
       type: "list",
-      starred: item.starred || false,
+      starred: item.is_favorite || false,
     }));
 
   const formatSegmentData = (data) =>
     data.map((item) => ({
       id: item._id || item.id,
       name: item.name,
-      count: item.members || item.count || 0,
+      count: item.contacts_count || 0,
       type: "segment",
-      starred: item.starred || false,
+      starred: item.is_favorite || false,
     }));
 
   const allAudienceOptions = [...formatListData(listData), ...formatSegmentData(segmentsData)];
@@ -133,40 +134,47 @@ const RecipientScreen = ({onBack}) => {
     try {
       const response = await getAllData(endPoints.api.GET_CAMPAIGN_TARGETS(campaignData.id));
             
-      if (response && response.data) {
-        const { lists = [], segments = [] } = response.data;
-        
-        // Transform the response data to match our component's expected format
-        const transformedLists = lists.map(list => ({
-          id: list.list_id,
-          name: list.list_name,
-          count: 0, // You might want to fetch this from another API
-          type: "list",
-          starred: false
-        }));
-        
-        const transformedSegments = segments.map(segment => ({
-          id: segment.segment_id,
-          name: segment.segment_name,
-          count: 0, // You might want to fetch this from another API
-          type: "segment",
-          starred: false
-        }));
-        
-        // Set the selected lists and segments
-        setSelectedLists(transformedLists);
-        setSelectedSegments(transformedSegments);
-        
-        // Store initial state for comparison
-        setInitialLists(transformedLists);
-        setInitialSegments(transformedSegments);
-      } else {
-        console.log("No data in GET response or response is falsy");
-      }
+       if (response && response.data) {
+         const { lists = [], segments = [] } = response.data;
+         
+         // Find matching lists from the full listData to get correct counts
+         const transformedLists = lists.map(list => {
+           const fullListData = listData.find(fullList => fullList._id === list.list_id || fullList.id === list.list_id);
+           return {
+             id: list.list_id,
+             name: list.list_name,
+             count: fullListData ? (fullListData.contacts_count || 0) : 0,
+             type: "list",
+             starred: fullListData ? (fullListData.is_favorite || false) : false
+           };
+         });
+         
+         // Find matching segments from the full segmentsData to get correct counts
+         const transformedSegments = segments.map(segment => {
+           const fullSegmentData = segmentsData.find(fullSegment => fullSegment._id === segment.segment_id || fullSegment.id === segment.segment_id);
+           return {
+             id: segment.segment_id,
+             name: segment.segment_name,
+             count: fullSegmentData ? (fullSegmentData.contacts_count || 0) : 0,
+             type: "segment",
+             starred: fullSegmentData ? (fullSegmentData.is_favorite || false) : false
+           };
+         });
+         
+         // Set the selected lists and segments
+         setSelectedLists(transformedLists);
+         setSelectedSegments(transformedSegments);
+         
+         // Store initial state for comparison
+         setInitialLists(transformedLists);
+         setInitialSegments(transformedSegments);
+       } else {
+         console.log("No data in GET response or response is falsy");
+       }
     } catch (err) {
       console.log("Error Object:", err);
     }
-  }, [campaignData]);
+  }, [campaignData, listData, segmentsData]);
 
   // Save campaign targets
   const saveTargets = useCallback(async () => {
@@ -209,6 +217,24 @@ const RecipientScreen = ({onBack}) => {
     loadCampaignTargets();
   }, [loadCampaignTargets]);
 
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowAudienceDropdown(false);
+        setFilterText("");
+      }
+    };
+
+    if (showAudienceDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAudienceDropdown]);
+
   const handleAudienceSelect = (option) => {
     if (option.type === "list") {
       const isSelected = selectedLists.some(list => list.id === option.id);
@@ -225,6 +251,10 @@ const RecipientScreen = ({onBack}) => {
         setSelectedSegments(prev => [...prev, option]);
       }
     }
+    
+    // Close dropdown after selection
+    setShowAudienceDropdown(false);
+    setFilterText("");
   };
 
 
@@ -309,16 +339,16 @@ const RecipientScreen = ({onBack}) => {
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                   Send to
                 </Typography>
-                <Box sx={{ position: "relative" }}>
-                <TextField
-                  fullWidth
-                  placeholder="Select lists or segments"
-                  value={
-                    [...selectedLists, ...selectedSegments].length > 0
-                      ? `${[...selectedLists, ...selectedSegments].length} item(s) selected`
-                      : ""
-                  }
-                  onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
+                <Box sx={{ position: "relative" }} ref={dropdownRef}>
+                  <TextField
+                    fullWidth
+                    placeholder="Select lists or segments"
+                    value={
+                      [...selectedLists, ...selectedSegments].length > 0
+                        ? `${[...selectedLists, ...selectedSegments].length} item(s) selected`
+                        : ""
+                    }
+                    onClick={() => setShowAudienceDropdown(!showAudienceDropdown)}
                     InputProps={{
                       readOnly: true,
                       endAdornment: (
