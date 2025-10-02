@@ -154,7 +154,7 @@ export default function ListsAndSegments() {
     }
   };
 
-  console.log("ListData", ListData);
+  // console.log("ListData", ListData);
   return (
     <Box p={3}>
       {/* Header */}
