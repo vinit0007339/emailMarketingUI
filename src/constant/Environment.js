@@ -30,6 +30,13 @@ export const endPoints = {
     // Campaign Targets API
     GET_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
     POST_CAMPAIGN_TARGETS: (campaignId) => `campaign_targets/${campaignId}/targets`,
+
+    // Template API
+    GET_ALL_TEMPLATES: "templates",
+    CREATE_TEMPLATE: "templates",
+    UPDATE_TEMPLATE: "templates",
+    DELETE_TEMPLATE: "templates",
+    GET_TEMPLATE_BY_ID: (templateId) => `templates/${templateId}`,
   },
   mode: "Development",
 };

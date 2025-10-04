@@ -90,3 +90,58 @@ export async function fetchAllData(url) {
   // return fetch(BASE_URL+url, requestOptions);
   return fetch(url, requestOptions);
 }
+
+// Template API functions
+export const getAllTemplates = async () => {
+  try {
+    const result = await axiosInstance.get("templates");
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const createTemplate = async (templateData) => {
+  try {
+    const result = await axiosInstance.post("templates", templateData);
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const updateTemplate = async (templateId, templateData) => {
+  try {
+    const result = await axiosInstance.patch(`templates/${templateId}`, templateData);
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const editTemplate = async (templateId, templateData) => {
+  try {
+    const result = await axiosInstance.put(`templates/${templateId}`, templateData);
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const deleteTemplate = async (templateId) => {
+  try {
+    const result = await axiosInstance.delete(`templates/${templateId}`);
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const getTemplateById = async (templateId) => {
+  try {
+    const result = await axiosInstance.get(`templates/${templateId}`);
+    return result;
+  } catch (error) {
+    return error.response;
+  }
+};

@@ -11,7 +11,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   Help as HelpIcon,
 } from "@mui/icons-material";
-import TemplatesSection from "./TemplatesSection";
 import EmailMessageSection from "./EmailMessageSection";
 import TemplateBuilder from "./TemplateBuilder";
 
@@ -71,18 +70,17 @@ const MessageScreen = () => {
         </Box>
 
         {/* Main Content */}
-        <Box sx={{ display: "flex", gap: 3, minHeight: "600px" }}>
+        <Box sx={{ display: "flex", gap: 3, height: "calc(100vh - 200px)", minHeight: "600px" }}>
           {/* Left Section - Templates */}
           <Paper
             elevation={0}
             sx={{
               flex: 1,
-              p: 3,
               borderRadius: 2,
               border: "1px solid #e0e0e0",
               display: "flex",
               flexDirection: "column",
-              minHeight: "600px",
+              overflow: "hidden",
             }}
           >
             {/* <TemplatesSection /> */}
@@ -99,7 +97,7 @@ const MessageScreen = () => {
               border: "1px solid #e0e0e0",
               display: "flex",
               flexDirection: "column",
-              minHeight: "600px",
+              overflow: "hidden",
             }}
           >
             <EmailMessageSection />
